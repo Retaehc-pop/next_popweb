@@ -1,0 +1,55 @@
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Prompt&display=swap");
+:root {
+  --color-primary-accent: #525252;
+  --color-secondary-accent: #8da7c7;
+  --color-primary: #30365a;
+  --color-background: #eeee;
+}
+[data-theme="dark"] {
+  --color-primary-accent: #817bd4;
+  --color-secondary-accent: #3c7d8f;
+  --color-primary: #eeee;
+  --color-background: rgb(24, 25, 34);
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  text-rendering: optimizeSpeed;
+  font-family: "Quicksand", "Prompt", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  background-color: var(--color-background);
+  color: var(--color-primary);
+  scroll-behavior: smooth;
+}
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+ul[role=list],
+ol[role=list] {
+  list-style: none;
+}
+* {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
