@@ -9,28 +9,56 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
 model Category {
-  id Int @id @default(autoincrement())
-  name  String @unique
-  project Project[] @relation(references: [id])
+  id      Int                   @id @default(autoincrement())
+  name    String                @unique
+  project CategoriesOnProject[]
 }
 
-model Language{
-  id Int @id @default(autoincrement())
-  name String @unique
-  project Project[] @relation(references: [id])
+model Language {
+  id      Int                 @id @default(autoincrement())
+  name    String              @unique
+  project LanguageOnProject[]
 }
-model Project{
-  id Int @id @default(autoincrement())
-  name String @unique
-  description String
-  categpries Category[] @relation(references:[id])
-  language Language[] @relation(references:[id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+model Project {
+  id          Int                   @id @default(autoincrement())
+  name        String?               @unique
+  description String?
+  published   Boolean?
+  images      Image[]
+  language    LanguageOnProject[]
+  categories  CategoriesOnProject[]
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
 }
-model Image{
-  id Int @id @default(autoincrement())
+
+model LanguageOnProject {
+  project    Project  @relation(fields: [projectId], references: [id])
+  projectId  Int
+  language   Language @relation(fields: [languageId], references: [id])
+  languageId Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+
+  @@id([projectId, languageId])
+}
+
+model CategoriesOnProject {
+  project    Project  @relation(fields: [projectId], references: [id])
+  projectId  Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId Int // relation scalar field (used in the `@relation` attribute above)
+  assignedAt DateTime @default(now())
+
+  @@id([projectId, categoryId])
+}
+
+model Image {
+  id       String @default(cuid()) @id
   publicId String @unique
-  format String
+  project  Project @relation(fields: [projectId], references: [id])
+  projectId Int
+  format   String
+  version  String
 }
