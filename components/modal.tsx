@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import ReactDOM from "react-dom";
+import styles from "../styles/Layout.module.scss";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-function Modal({ show, onClose, children, title }) {
+function Modal({ open, onClose, children }) {
     const [isBrowser, setIsBrowser] = useState(false);
   
     useEffect(() => {
@@ -9,21 +12,24 @@ function Modal({ show, onClose, children, title }) {
     }, []);
 
     const handleCloseClick = (e) => {
+      // console.log(e.target.id);
+      if (e.target.id != "backdrop"){
+        return;
+      }
+      
+
       e.preventDefault();
       onClose();
     };
 
-    const modalContent = show ? (
-      <div>
-        <div>
-          <div>
-            <a href="#" onClick={handleCloseClick}>
-              x
-            </a>
-          </div>
-          {title && <h1>{title}</h1>}
-          <div>{children}</div>
-        </div>
+    const modalContent = open ? (
+      <div className={styles.modal} id="backdrop" onClick={handleCloseClick}>
+        <span id="backdrop">
+            <FontAwesomeIcon id="backdrop" onClick={handleCloseClick} icon={faXmark} size="2x"/>
+        </span>
+        <section onClick={()=>{}}>
+          {children}
+        </section>
       </div>
     ) : null;
 

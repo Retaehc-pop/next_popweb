@@ -33,6 +33,10 @@ import {
   faPhone,
   faLocationPin,
   faMapPin,
+  faChevronLeft,
+  faChevronRight,
+  faCircleChevronRight,
+  faCircleChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faPython,
@@ -58,6 +62,7 @@ import {
   faNextJs,
   faPrisma,
 } from "../components/icons/";
+import Modal from "../components/modal";
 
 const Trail = ({ open, children }: { open: boolean; children: any }) => {
   const items = React.Children.toArray(children);
@@ -161,7 +166,12 @@ const projects = [
 const Home: NextPage = () => {
   const date = new Date();
   const parallax = useRef<IParallax>(null!);
-  const [project, setProject] = useState("");
+  const [project, setProject] = useState({
+    id:0,
+    name:"",
+    description:"",
+    image: [],
+  });
   const [openProject, setOpenProject] = useState(false);
   return (
     <>
@@ -602,11 +612,12 @@ const Home: NextPage = () => {
                     <h4>Competition</h4>
                   </span>
                 </section>
-                {projects.map((project, index) => (
+                {
+                projects.map((project, index) => (
                   <div
                     key={index}
                     onClick={() => {
-                      setProject(project.name);
+                      setProject(project);
                       setOpenProject(true);
                     }}
                   >
@@ -618,30 +629,21 @@ const Home: NextPage = () => {
                       }
                     />
                   </div>
-                ))}
-                <dialog open={openProject}>
-                      <h1>{project}</h1>
-                      <button onClick={() => setOpenProject(false)}>Close</button>
-                </dialog>
-                {/* <div>
-                  <img src="/pic/profile.jpg" />
-                  <p>asdlkasd</p>
-                </div>
-                <div>
-                  <img src="/pic/profile.jpg" />
-                </div>
-                <div>
-                  <img src="/pic/profile.jpg" />
-                </div>
-                <div>
-                  <img src="/pic/profile.jpg" />
-                </div>
-                <div>
-                  <img src="/pic/profile.jpg" />
-                </div>
-                <div>
-                  <img src="/pic/profile.jpg" />
-                </div> */}
+                ))
+                }
+                <Modal onClose={()=>setOpenProject(false)} open={openProject}>
+                  <div className={styles.modal}>
+                    <div className={styles.img}>
+                      <img src={project.image[0]}/>
+                      <i style={{left:"5%"}}><FontAwesomeIcon icon={faCircleChevronLeft}/></i>
+                      <i style={{right:"45%"}}><FontAwesomeIcon icon={faCircleChevronRight}/></i>
+                    </div>
+                    <div className={styles.description}>
+                      <h1>{project.name}</h1>
+                      <p>{project.description}</p>
+                    </div>
+                  </div>
+                </Modal>
               </section>
             </ParallaxLayer>
 

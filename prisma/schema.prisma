@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 model Category {
@@ -28,6 +29,7 @@ model Project {
   description String?
   published   Boolean?
   images      Image[]
+  github      String?
   language    LanguageOnProject[]
   categories  CategoriesOnProject[]
   createdAt   DateTime              @default(now())
@@ -35,30 +37,30 @@ model Project {
 }
 
 model LanguageOnProject {
-  project    Project  @relation(fields: [projectId], references: [id])
-  projectId  Int
-  language   Language @relation(fields: [languageId], references: [id])
-  languageId Int // relation scalar field (used in the `@relation` attribute above)
-  assignedAt DateTime @default(now())
+  project      Project  @relation(fields: [projectId], references: [id])
+  projectId    Int
+  language     Language @relation(fields: [languageName], references: [name])
+  languageName String // relation scalar field (used in the `@relation` attribute above)
+  assignedAt   DateTime @default(now())
 
-  @@id([projectId, languageId])
+  @@id([projectId, languageName])
 }
 
 model CategoriesOnProject {
-  project    Project  @relation(fields: [projectId], references: [id])
-  projectId  Int
-  category   Category @relation(fields: [categoryId], references: [id])
-  categoryId Int // relation scalar field (used in the `@relation` attribute above)
-  assignedAt DateTime @default(now())
+  project      Project  @relation(fields: [projectId], references: [id])
+  projectId    Int
+  category     Category @relation(fields: [categoryName], references: [name])
+  categoryName String // relation scalar field (used in the `@relation` attribute above)
+  assignedAt   DateTime @default(now())
 
-  @@id([projectId, categoryId])
+  @@id([projectId, categoryName])
 }
 
 model Image {
-  id       String @default(cuid()) @id
-  publicId String @unique
-  project  Project @relation(fields: [projectId], references: [id])
+  id        String  @id @default(cuid())
+  publicId  String  @unique
+  project   Project @relation(fields: [projectId], references: [id])
   projectId Int
-  format   String
-  version  String
+  format    String
+  version   String
 }
