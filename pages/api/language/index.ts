@@ -6,22 +6,10 @@ export default async function(req:NextApiRequest,res:NextApiResponse){
   return new Promise(resolve => {
     switch(req.method){
       case "POST":
-        handlePost(req,res).then(() => {
-          resolve(res);
-        }).catch(err => {
-          return res.status(400).json({
-            error: err.message
-            })
-            });
+        handlePost(req,res).then(() => {resolve(res);}).catch(err => {return res.status(400).json({error: err.message})});
         break;
       case "GET":
-        handleGet(req,res).then(() => {
-          resolve(res);
-        }).catch(err => {
-          return res.status(400).json({
-            error: err.message
-            })
-            });
+        handleGet(req,res).then(() => {resolve(res); }).catch(err => {return res.status(400).json({error: err.message})});
         break;
       default:
         res.status(400).json({
@@ -35,10 +23,15 @@ export default async function(req:NextApiRequest,res:NextApiResponse){
 
 async function handlePost(req:NextApiRequest,res:NextApiResponse){
   try{
-    const data = await req.body;
+    // const data = JSON.parse(req.body); 
+
+    const data = req.body; 
+    const name:string = data.name; 
+    if (!name) throw new Error(data);
+
     const languageData = await prisma.language.findUnique({
       where:{
-        name: data.name
+        name: name
       }
     })
     if (languageData){
@@ -49,7 +42,7 @@ async function handlePost(req:NextApiRequest,res:NextApiResponse){
     else{
       const result = await prisma.language.create({
         data: {
-          name: data.name
+          name: name
         }
       })
       return res.status(200).json(result);

@@ -25,9 +25,9 @@ model Language {
 
 model Project {
   id          Int                   @id @default(autoincrement())
-  name        String?               @unique
+  name        String                @unique
   description String?
-  published   Boolean?
+  published   Boolean               @default(false)
   images      Image[]
   github      String?
   language    LanguageOnProject[]
@@ -61,6 +61,4 @@ model Image {
   publicId  String  @unique
   project   Project @relation(fields: [projectId], references: [id])
   projectId Int
-  format    String
-  version   String
 }

@@ -136,29 +136,35 @@ const Language = ({languages}) => {
   const [toAdd, setToAdd] = useState([]);
   const [newLanguage, setNewLanguage] = useState("");
 
-  
-  async function saveLanguage(){
-    toDelete.forEach(async (lang) => {
-      const res = await fetch(`http://localhost:3000/api/language/${lang.name}`, {
+  async function deleteLanguage(){
+    toDelete.forEach(async (lang)=>{
+      fetch(`http://localhost:3000/api/language/${lang.name}`,{
         method: "DELETE",
-      });
+      }).then(res=>res.json()).then(res=>console.log(res))
     });
-    toAdd.forEach(async (lang) => {
-      const res = await fetch(`http://localhost:3000/api/language`, {
+    return "done";
+  }
+  
+  async function addLanguage(){
+    toAdd.forEach(async (lang)=>{
+      fetch(`http://localhost:3000/api/language`,{
         method: "POST",
-        body: JSON.stringify({
-          name: lang.name,
-        }),
-      });
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name:lang})
+      }).then(res=>res.json()).then(res=>console.log(res))
     });
-    alert("Saved");
+    return "done";
   }
-  async function addLanguage(item){
-      const res = await fetch("http://localhost:3000/api/language/", {method: "POST", body: JSON.stringify(item)});
+
+  async function saveLanguage(){
+    addLanguage().then(res=>deleteLanguage()).then(res=>alert("done")).then(
+      res=>{
+        setToDelete([])
+        setToAdd([])
+      }
+    )
   }
-  async function deleteLanguage(item){
-      const res = await fetch(`http://localhost:3000/api/language/${item.name}`, {method: "DELETE"});
-  }
+
   return (
     <>
       <section className={styles.language} id="language">

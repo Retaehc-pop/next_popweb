@@ -44,7 +44,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function handlePost(req: NextApiRequest, res: NextApiResponse) {
-  const data = await req.body();
+  const data = await req.body;
   const categories = await prisma.category.findMany();
   if (categories.find((category) => category.name === data.name)) {
     return res.status(400).json({
