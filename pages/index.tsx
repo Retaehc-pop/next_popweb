@@ -87,11 +87,6 @@ const Trails = ({ open, children }: { open: boolean; children: any }) => {
   );
 };
 
-const items = [
-  { text: 1, key: 1 },
-  { text: 2, key: 2 },
-  { text: 3, key: 3 },
-];
 
 const projects = [
   {
@@ -175,12 +170,14 @@ const projects = [
 const Home: NextPage = () => {
   const date = new Date();
   const parallax = useRef<IParallax>(null!);
+
   const [project, setProject] = useState({
     id: 0,
     name: "",
     description: "",
     image: [],
   });
+
   const [openProject, setOpenProject] = useState(false);
   return (
     <>
@@ -351,10 +348,21 @@ const Home: NextPage = () => {
                   </Spring>
                 )}
               </VisibilitySensor>
-              <VisibilitySensor>
+              <VisibilitySensor partialVisibility>
+              {({ isVisible }) => (
                 <section>
-                  <img src="static/profile.jpg" />
+                  <Spring
+                    delay={300}
+                    to={{
+                      borderRadius: isVisible ? "50%" : "0%",
+                      opacity: isVisible ? 1 : 0,
+                    }}
+                  >{(props) => (
+                    <animated.img style={{...props}} alt="profilepic" src="static/profile.jpg" />
+                  )}
+                  </Spring>
                 </section>
+                )}
               </VisibilitySensor>
             </ParallaxLayer>
 

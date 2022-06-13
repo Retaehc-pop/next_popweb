@@ -12,26 +12,22 @@ function Modal({ open, onClose, children }) {
     }, []);
 
     const handleCloseClick = (e) => {
-      // console.log(e.target.id);
       if (e.target.id != "backdrop"){
         return;
       }
-      
-
       e.preventDefault();
       onClose();
     };
 
-    const modalContent = open ? (
-      <div className={styles.modal} id="backdrop" onClick={handleCloseClick}>
+    const modalContent =(
+      <div className={open ? styles.modal:styles.modalclose} id="backdrop" onClick={handleCloseClick}>
         <span id="backdrop">
             <FontAwesomeIcon id="backdrop" onClick={handleCloseClick} icon={faXmark} size="2x"/>
         </span>
         <section onClick={()=>{}}>
           {children}
         </section>
-      </div>
-    ) : null;
+      </div>)
 
     if (isBrowser) {
         return ReactDOM.createPortal(

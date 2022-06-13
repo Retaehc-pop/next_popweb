@@ -120,16 +120,8 @@ const Project = () => {
     </>
   );
 };
-const User = () => {
-  return (
-    <>
-      <section id="project">
-        <h1>Project</h1>
-        <input type="text" placeholder="Search" />
-      </section>
-    </>
-  );
-};
+
+
 const Language = ({languages}) => {
   const [language, setLanguage] = useState(languages);
   const [toDelete, setToDelete] = useState([]);
