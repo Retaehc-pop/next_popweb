@@ -66,7 +66,7 @@ import {
   faPrisma,
 } from "../components/icons/";
 import Modal from "../components/modal";
-
+import SideBar from "../components/sidebar";
 const Trails = ({ open, children }: { open: boolean; children: any }) => {
   const items = React.Children.toArray(children);
   const trail = useTrail(items.length, {
@@ -186,7 +186,7 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <section className={styles.sidebar}>
+        {/* <section className={styles.sidebar}>
           <div className={styles.header}>
             <img src="favicon.ico" />
             <h1>Pop</h1>
@@ -229,7 +229,8 @@ const Home: NextPage = () => {
           <div className={styles.footer}>
             <p>© {date.getFullYear()}</p>
           </div>
-        </section>
+        </section> */}
+        <SideBar />
         <section className={styles.parallax}>
           <Parallax ref={parallax} pages={10}>
             <ParallaxLayer offset={0} speed={0.1} className={styles.landing}>

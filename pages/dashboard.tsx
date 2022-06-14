@@ -2,7 +2,8 @@ import type { NextPage } from "next";
 import Link from "next/link";
 import Head from "next/head";
 import { useState, useEffect } from "react";
-import styles from "../styles/Backend.module.scss";
+import styles from "../styles/Dashboard.module.scss";
+import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faClose,
@@ -32,7 +33,8 @@ export async function getServerSideProps() {
   };
 }
 
-const Backend: NextPage = ({project,language,category}:{project:Project,language:Language,category:Category}) => {
+const Dashboard: NextPage = ({project,language,category}:{project:Project,language:Language,category:Category}) => {
+  const router = useRouter();
   const date = new Date();
   return (
     <>
@@ -41,7 +43,7 @@ const Backend: NextPage = ({project,language,category}:{project:Project,language
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <section className={styles.sidebar}>
+        <nav className={styles.sidebar}>
           <div className={styles.header}>
             <img src="favicon.ico" />
             <h2>Dashboard</h2>
@@ -94,52 +96,78 @@ const Backend: NextPage = ({project,language,category}:{project:Project,language
           <div className={styles.footer}>
             <p>© {date.getFullYear()}</p>
           </div>
-        </section>
-        <Project />
-        <Language languages={language}/>
+        </nav>
+        <Project projects={project}/>
+        <Tag name={"language"} type={language}/>
+        <Tag name={"category"} type={category}/>
+        
       </main>
     </>
   );
 };
 
-const Project = () => {
+const Project = ({projects}) => {
   const [project, setProject] = useState({
     name: "",
     description: "",
-    image: [],
+    image: new FileList,
     category: [],
     language: [],
     github: "",
   });
+  console.log(project);
+  const [isNew, setIsNew] = useState(true);
   return (
     <>
-      <section id="project">
+      <section className={styles.project} id="project">
+        <div>
         <h1>Project</h1>
-        <input type="text" placeholder="Search" />
+        </div>
+        <div>
+        {
+          isNew ? (
+          <>
+          <input type="text" placeholder="Name" value={project.name} onChange={e=>{setProject({...project,name:e.target.value})}}/>
+          <textarea placeholder="description" value={project.description} onChange={e=>{setProject({...project,description:e.target.value})}}/>
+          <input type="text" placeholder="https://github.com/" value={project.github} onChange={e=>{setProject({...project,github:e.target.value})}}/>
+          <input type="file" placeholder="Name" onChange={e=>setProject({...project,image:e.target.files})} multiple/>
+          </>
+            
+          ):(
+            <input type="text" placeholder="Search" />
+            
+            )
+        }
+        </div>
       </section>
     </>
   );
 };
 
 
-const Language = ({languages}) => {
-  const [language, setLanguage] = useState(languages);
+const Tag = ({name,type}:{name:string,type:any}) => {
+  const [item, setItem] = useState(type);
   const [toDelete, setToDelete] = useState([]);
   const [toAdd, setToAdd] = useState([]);
-  const [newLanguage, setNewLanguage] = useState("");
+  const [newItem, setNewItem] = useState("");
 
-  async function deleteLanguage(){
+  async function deleteItem(){
     toDelete.forEach(async (lang)=>{
-      fetch(`http://localhost:3000/api/language/${lang.name}`,{
+      console.log(`http://localhost:3000/api/${name}/${lang.name}`);
+      fetch(`http://localhost:3000/api/${name}/${lang.name}`,{
         method: "DELETE",
+        headers : { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+         },
       }).then(res=>res.json()).then(res=>console.log(res))
     });
     return "done";
   }
   
-  async function addLanguage(){
+  async function addItem(){
     toAdd.forEach(async (lang)=>{
-      fetch(`http://localhost:3000/api/language`,{
+      fetch(`http://localhost:3000/api/${name}`,{
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({name:lang})
@@ -148,8 +176,8 @@ const Language = ({languages}) => {
     return "done";
   }
 
-  async function saveLanguage(){
-    addLanguage().then(res=>deleteLanguage()).then(res=>alert("done")).then(
+  async function saveItem(){
+    addItem().then(res=>deleteItem()).then(res=>alert("done")).then(
       res=>{
         setToDelete([])
         setToAdd([])
@@ -159,12 +187,12 @@ const Language = ({languages}) => {
 
   return (
     <>
-      <section className={styles.language} id="language">
+      <section className={styles.tags} id={name}>
         <span>
-          <h1>Language</h1>
-          <button onClick={()=>saveLanguage()}>save</button>
+          <h1>{name}</h1>
+          <button onClick={()=>saveItem()}>save</button>
         </span>
-        <div>
+        <div className={styles.delete}>
           <h6>Delete : </h6>
           {
             toDelete.map((lang) => (
@@ -172,34 +200,34 @@ const Language = ({languages}) => {
                 <p>{lang.name}</p>
                 <FontAwesomeIcon onClick={()=>{
                 setToDelete(toDelete.filter(item => item.id !== lang.id))
-                setLanguage([...language,lang])
+                setItem([...item,lang])
               }}icon={faClose}/>
               </span>
             ))
           }
         </div>
         <div>
-          {language.map((lang) => (
+          {item.map((lang) => (
             <span key={lang.id}>
               <h2>{lang.name}</h2>
               <FontAwesomeIcon onClick={()=>{
-                languages.some(
+                type.some(
                   item => {
                     if(item.name === lang.name){
                       setToDelete([...toDelete,lang])
                     }
                   }
                 )
-                setLanguage(language.filter(item => item.id !== lang.id))
+                setItem(item.filter(item => item.id !== lang.id))
               }}icon={faClose}/>
             </span>
           ))}
           <span>
-            <input value={newLanguage} onChange={(e)=>{setNewLanguage(e.target.value)}}/>
+            <input value={newItem} onChange={(e)=>{setNewItem(e.target.value)}}/>
             <FontAwesomeIcon onClick={()=>{
-              setToAdd([...toAdd,newLanguage]);
-              setLanguage([...language,{id:language.length+1,name:newLanguage}])
-              setNewLanguage("");
+              setToAdd([...toAdd,newItem]);
+              setItem([...item,{id:item.length+1,name:newItem}])
+              setNewItem("");
               }} icon={faPlus}/>
           </span>
         </div>
@@ -207,4 +235,6 @@ const Language = ({languages}) => {
     </>
   );
 };
-export default Backend;
+
+
+export default Dashboard;

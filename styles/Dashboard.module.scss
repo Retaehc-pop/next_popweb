@@ -2,10 +2,23 @@
   height: 100vh;
   width: 100vw;
   background-color: #eeee;
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  justify-content: space-evenly;
+
   section{
-    display: flex;
-    align-items: center;
+  width: 90%;
+  margin-left: 6%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  border: 5px solid var(--color-secondary-accent);
+  border-radius: 25px;
   }
+
   h1{
     font-size: 4rem;
   }
@@ -14,9 +27,11 @@
 .sidebar{
   position: fixed;
   height: 100%;
+  display: flex;
   flex-direction: column;
   width: 4%;
   justify-content: space-between;
+  align-items: center;
   background-color: #e7e7e8;
   transition-duration: .2s;
   z-index: 1;
@@ -75,14 +90,22 @@
   }
   
 }
-.language{
-  width: 100%;
-  padding-left: 6%;
+.project{
+  div{
+    display: flex;
+    flex-direction: column;
+  }
+}
+.tags{
+  width: 90%;
+  margin-left: 6%;
   position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
+  border: 5px solid var(--color-secondary-accent);
+  border-radius: 25px;
   span{
     width: 100%;
     display: flex;
@@ -101,16 +124,18 @@
       background-color:var(--color-primary);
     }
   }
+  .delete{
+    color: var(--color-background);
+    background-color: var(--color-primary-accent);
+    height: 3rem;
+  }
   div{
     width: 100%;
     display: grid;
     grid-template-columns: repeat(5, minmax(200px, 1fr));
     justify-content: center;
     align-items: center;
-    
     span{
-      display: flex;
-      justify-content: space-around;
       align-items: center;
       margin: 1rem 1rem;
       width: 90%;
