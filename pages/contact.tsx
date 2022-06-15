@@ -1,5 +1,6 @@
 import type {NextPage} from "next";
 import Head from "next/head";
+import Image from "next/image";
 import styles from "../styles/Contact.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -16,7 +17,7 @@ const Contact: NextPage = () => {
     <main className={styles.main}>
       <section className={styles.orbit}>
           <div className={styles.center}>
-            <img src="favicon.ico" alt="" />
+            <Image src="favicon.ico" alt="logo" />
           </div>
           <ul>
             <li>

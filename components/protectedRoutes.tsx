@@ -10,7 +10,7 @@ const ProtectedRoutes = ({ children }: { children: React.ReactNode }) => {
     if (status === "unauthenticated") {
       router.push("/");
     }
-  }, [status]);
+  }, [status,router]);
   if (status === "loading") return null;
   if (status === "unauthenticated") return null;
 

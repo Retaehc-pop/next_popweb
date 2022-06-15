@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import React, { useState, useRef, useEffect } from "react";
 import Head from "next/head";
+import Image from "next/image";
 import styles from "../styles/Home.module.scss";
 import Link from "next/link";
 import { Parallax, ParallaxLayer, IParallax } from "@react-spring/parallax";
@@ -242,7 +243,7 @@ const Home: NextPage = () => {
                         <h1>
                           Hi,
                           <br />
-                          I'm Pop,
+                          I&apos;m Pop,
                           <br />
                           Software developer
                         </h1>
@@ -396,7 +397,7 @@ const Home: NextPage = () => {
                           <h4>Bachlor of Science Computer Sciene</h4>
                         </span>
                         <span>
-                          <img src="/static/RWTHAachen.jpg" />
+                          <Image src="/static/RWTHAachen.jpg" alt="RWTH"/>
                         </span>
                       </div>
 
@@ -410,7 +411,7 @@ const Home: NextPage = () => {
                           <p>GPAX:3.64</p>
                         </span>
                         <span>
-                          <img src="/static/AssumptionCollege.jpg" />
+                          <Image src="/static/AssumptionCollege.jpg" alt="assumptionCollege"/>
                         </span>
                       </div>
                     </Trails>
@@ -656,19 +657,20 @@ const Home: NextPage = () => {
                       setOpenProject(true);
                     }}
                   >
-                    <img
+                    <Image
                       src={
                         project.image.length !== 0
                           ? project.image[0]
                           : "/static/AssumptionCollege.jpg"
                       }
+                      alt={project.name}
                     />
                   </div>
                 ))}
                 <Modal onClose={() => setOpenProject(false)} open={openProject}>
                   <div className={styles.modal}>
                     <div className={styles.img}>
-                      <img src={project.image[0]} />
+                      <Image src={project.image[0]} alt={project.name}/>
                       <i style={{ left: "5%" }}>
                         <FontAwesomeIcon icon={faCircleChevronLeft} />
                       </i>

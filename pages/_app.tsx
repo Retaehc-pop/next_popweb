@@ -12,7 +12,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       <AuthWrapper>
         <Component {...pageProps} />
       </AuthWrapper>
-    // </SessionProvider>
+    </SessionProvider>
   );
 }
 

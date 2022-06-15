@@ -3,7 +3,7 @@ import { Project } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
 
 
-export default async function(req:NextApiRequest,res:NextApiResponse){
+export default async function handle(req:NextApiRequest,res:NextApiResponse){
   return new Promise(resolve => {
     switch(req.method){
       case "DELETE":

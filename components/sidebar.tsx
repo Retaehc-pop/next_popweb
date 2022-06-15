@@ -11,6 +11,7 @@ import {
   faArrowRightFromBracket,
   faCubes,
 } from "@fortawesome/free-solid-svg-icons";
+import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 export default function SideBar() {
   const date = new Date();
@@ -19,7 +20,7 @@ export default function SideBar() {
   return (
     <section className={styles.sidebar}>
       <div className={styles.header}>
-        <img src="favicon.ico" />
+        <Image src="favicon.ico" alt="logo"/>
         <h1>Pop</h1>
       </div>
       <div className={styles.menu}>

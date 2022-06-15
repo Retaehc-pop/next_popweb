@@ -1,7 +1,7 @@
 import Link from "next/link";
 import styles from "../styles/Layout.module.scss";
 import { useState, useEffect } from 'react'
-
+import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLinkedin,faGithub,faInstagram,faStackOverflow,faDiscord} from "@fortawesome/free-brands-svg-icons";
 import { faPhone, faEnvelope, faAdjust} from "@fortawesome/free-solid-svg-icons";
@@ -49,7 +49,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     <>
       <nav className={styles.nav}>
         <Link href="/" passHref>
-          <img src="/favicon.ico" width={50} height={50}/>
+          <Image src="/favicon.ico" alt="logo" width={50} height={50}/>
         </Link>
         <ul style={burger ? { transform: "translateX(0)" } : {}}>
           <li>

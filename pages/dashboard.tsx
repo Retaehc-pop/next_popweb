@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import styles from "../styles/Dashboard.module.scss";
 import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 import {
   faClose,
   faGroupArrowsRotate,
@@ -45,7 +46,7 @@ const Dashboard: NextPage = ({project,language,category}:{project:Project,langua
       <main className={styles.main}>
         <nav className={styles.sidebar}>
           <div className={styles.header}>
-            <img src="favicon.ico" />
+            <Image src="favicon.ico" alt="logo"/>
             <h2>Dashboard</h2>
           </div>
           <div className={styles.menu}>
@@ -100,7 +101,6 @@ const Dashboard: NextPage = ({project,language,category}:{project:Project,langua
         <Project projects={project}/>
         <Tag name={"language"} type={language}/>
         <Tag name={"category"} type={category}/>
-        
       </main>
     </>
   );
@@ -110,32 +110,33 @@ const Project = ({projects}) => {
   const [project, setProject] = useState({
     name: "",
     description: "",
-    image: new FileList,
+    image: null,
     category: [],
     language: [],
     github: "",
   });
   console.log(project);
-  const [isNew, setIsNew] = useState(true);
+  const [isNew, setIsNew] = useState(false);
+  console.log(isNew);
   return (
     <>
       <section className={styles.project} id="project">
         <div>
         <h1>Project</h1>
+        <button onClick={()=>setIsNew(!isNew)}>change</button>
         </div>
         <div>
         {
           isNew ? (
           <>
-          <input type="text" placeholder="Name" value={project.name} onChange={e=>{setProject({...project,name:e.target.value})}}/>
-          <textarea placeholder="description" value={project.description} onChange={e=>{setProject({...project,description:e.target.value})}}/>
-          <input type="text" placeholder="https://github.com/" value={project.github} onChange={e=>{setProject({...project,github:e.target.value})}}/>
-          <input type="file" placeholder="Name" onChange={e=>setProject({...project,image:e.target.files})} multiple/>
+            <input type="text" placeholder="Name" value={project.name} onChange={e=>{setProject({...project,name:e.target.value})}}/>
+            <textarea placeholder="description" value={project.description} onChange={e=>{setProject({...project,description:e.target.value})}}/>
+            <input type="text" placeholder="https://github.com/" value={project.github} onChange={e=>{setProject({...project,github:e.target.value})}}/>
+            <input type="file" placeholder="Name" onChange={e=>setProject({...project,image:e.target.files})} multiple/>
           </>
             
           ):(
-            <input type="text" placeholder="Search" />
-            
+            <></>
             )
         }
         </div>
