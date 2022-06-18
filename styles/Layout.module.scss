@@ -90,19 +90,17 @@
 
 .sidebar{
   position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   height: 100%;
   width: 3%;
   justify-content: space-between;
   background-color: #e7e7e8;
-  transition-duration: .2s;
+  transition: ease-in-out .2s all;
   z-index: 1;
-  .header{
-    h1{
-      opacity: 0;
-    }
-  }
   &:hover{
-    transition-duration: .2s;
+    transition: ease-in-out .2s all;
     width: 6%;
     .header{
       h1{
@@ -110,19 +108,21 @@
       }
     }
   }
-  img{
-    height: 90%;
-    width: 90%;
-    object-fit: contain;
-  }
-  div{
+  
+  .header{
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    
+    transition-duration: .2s;
+    h1{
+      opacity: 0;
+      font-size: 1rem;
+      font-weight: 900;
+    }
   }
-  span{
+  
+  .button{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -144,10 +144,6 @@
       font-size: 1rem;
       opacity: 0;
     }
-  }
-  h1{
-    font-size: 1.5rem;
-    font-weight: 900;
   }
 }
 

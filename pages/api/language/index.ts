@@ -34,7 +34,6 @@ export default async function handle(req: NextApiRequest, res: NextApiResponse) 
 
 async function handlePost(req: NextApiRequest, res: NextApiResponse) {
   try {
-    // const data = JSON.parse(req.body);
 
     const data = req.body;
     const name: string = data.name;

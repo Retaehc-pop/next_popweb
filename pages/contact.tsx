@@ -17,7 +17,7 @@ const Contact: NextPage = () => {
     <main className={styles.main}>
       <section className={styles.orbit}>
           <div className={styles.center}>
-            <Image src="favicon.ico" alt="logo" />
+            <Image src="/favicon.ico" alt="logo" objectFit="contain" width="100%" height="100%"/>
           </div>
           <ul>
             <li>

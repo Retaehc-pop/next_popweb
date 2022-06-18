@@ -67,7 +67,8 @@ import {
   faPrisma,
 } from "../components/icons/";
 import Modal from "../components/modal";
-import SideBar from "../components/sidebar";
+import SideBar, { SideBarProps } from "../components/sidebar";
+
 const Trails = ({ open, children }: { open: boolean; children: any }) => {
   const items = React.Children.toArray(children);
   const trail = useTrail(items.length, {
@@ -87,7 +88,6 @@ const Trails = ({ open, children }: { open: boolean; children: any }) => {
     </>
   );
 };
-
 
 const projects = [
   {
@@ -172,6 +172,45 @@ const Home: NextPage = () => {
   const date = new Date();
   const parallax = useRef<IParallax>(null!);
 
+  const parallaxScrollTo = (page) => {
+    if (parallax.current!==null) {
+      parallax.current.scrollTo(page);
+    }
+  }
+
+  const sidebarItem: SideBarProps[] = [
+    {
+      name: "About me",
+      href: "#about",
+      icon: faUser,
+      onClick: ()=>parallaxScrollTo(1),
+    },
+    {
+      name: "Experties",
+      href: "#Experties",
+      icon: faCode,
+      onClick: ()=>parallaxScrollTo(2),
+    },
+    {
+      name: "Projects",
+      href: "#Projects",
+      icon: faDiagramProject,
+      onClick: ()=>parallaxScrollTo(3),
+    },
+    {
+      name: "Experience",
+      href: "#Experience",
+      icon: faCrown,
+      onClick: ()=>parallaxScrollTo(4),
+    },
+    {
+      name: "Contact",
+      href: "#contact",
+      icon: faAddressCard,
+      onClick: ()=>parallaxScrollTo(5),
+    },
+  ];
+
   const [project, setProject] = useState({
     id: 0,
     name: "",
@@ -186,52 +225,8 @@ const Home: NextPage = () => {
         <title>Home</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
+        <SideBar item={sidebarItem} name="Home" />
       <main className={styles.main}>
-        {/* <section className={styles.sidebar}>
-          <div className={styles.header}>
-            <img src="favicon.ico" />
-            <h1>Pop</h1>
-          </div>
-          <div className={styles.menu}>
-            <Link href="#about" passHref>
-              <span onClick={() => parallax.current.scrollTo(1)}>
-                <FontAwesomeIcon icon={faUser} />
-                <p>About me</p>
-              </span>
-            </Link>
-            <Link href="#Experties" passHref>
-              <span onClick={() => parallax.current.scrollTo(3)}>
-                <FontAwesomeIcon icon={faCode} />
-                <p>Experties</p>
-              </span>
-            </Link>
-            <Link href="#Projects" passHref>
-              <span onClick={() => parallax.current.scrollTo(4)}>
-                <FontAwesomeIcon icon={faDiagramProject} />
-                <p>Projects</p>
-              </span>
-            </Link>
-
-            <Link href="#Experience" passHref>
-              <span onClick={() => parallax.current.scrollTo(5)}>
-                <FontAwesomeIcon icon={faCrown} />
-                <p>Experience</p>
-              </span>
-            </Link>
-          </div>
-          <div>
-            <Link href="/contact" passHref>
-              <span>
-                <FontAwesomeIcon icon={faAddressCard} />
-                <p>Contact</p>
-              </span>
-            </Link>
-          </div>
-          <div className={styles.footer}>
-            <p>© {date.getFullYear()}</p>
-          </div>
-        </section> */}
-        <SideBar />
         <section className={styles.parallax}>
           <Parallax ref={parallax} pages={10}>
             <ParallaxLayer offset={0} speed={0.1} className={styles.landing}>
@@ -265,7 +260,7 @@ const Home: NextPage = () => {
             <ParallaxLayer offset={1} speed={0.6} className={styles.about}>
               <VisibilitySensor partialVisibility>
                 {({ isVisible }) => (
-                    <Spring
+                  <Spring
                     delay={300}
                     to={{
                       transform: isVisible
@@ -276,145 +271,101 @@ const Home: NextPage = () => {
                   >
                     {(props) => (
                       <animated.section style={{ ...props }}>
-                      <h2>Papop Lekhapanyaporn</h2>
-                      <h3>Pop</h3>
-                      <h3>
-                        {new Date().getFullYear() -
-                          new Date(
-                            "March 20, 2003 00:00:00"
-                          ).getFullYear()}{" "}
-                        Years Old
-                      </h3>
-                      <h3>From Bangkok,Thailand</h3>
-                      <p>
-                        <FontAwesomeIcon icon={faMapPin} /> Bangkok,Thailand
-                      </p>
-                      <div>
-                        <Link href="mailto:papop2003@gmail.com" passHref>
-                          <span>
-                            <FontAwesomeIcon icon={faEnvelope} size="2x" />
-                            <p>E-mail</p>
-                          </span>
-                        </Link>
-                        <Link
-                          href="https://www.instagram.com/__pop.p/"
-                          passHref
-                        >
-                          <span>
-                            <FontAwesomeIcon icon={faInstagram} size="2x" />
-                            <p>Instagram</p>
-                          </span>
-                        </Link>
-                        <Link href="https://github.com/Retaehc-pop" passHref>
-                          <span>
-                            <FontAwesomeIcon icon={faGithub} size="2x" />
-                            <p>Github</p>
-                          </span>
-                        </Link>
-                        <Link href="tel:+66898118068" passHref>
-                          <span>
-                            <FontAwesomeIcon icon={faPhone} size="2x" />
-                            <p>Phone</p>
-                          </span>
-                        </Link>
-                        <Link
-                          href="https://stackoverflow.com/users/14537225/papop-lekhapanyaporn"
-                          passHref
-                        >
-                          <span>
-                            <FontAwesomeIcon icon={faStackOverflow} size="2x" />
-                            <p>Stack overflow</p>
-                          </span>
-                        </Link>
-                        <Link
-                          href="https://www.linkedin.com/in/papop-lekhapanyaporn-2386b5229/"
-                          passHref
-                        >
-                          <span>
-                            <FontAwesomeIcon icon={faLinkedin} size="2x" />
-                            <p>Linked In</p>
-                          </span>
-                        </Link>
-                        <Link
-                          href="https://discordapp.com/users/267572826418970624"
-                          passHref
-                        >
-                          <span>
-                            <FontAwesomeIcon icon={faDiscord} size="2x" />
-                            <p>Discord</p>
-                          </span>
-                        </Link>
-                      </div>
-                  </animated.section>
+                        <h2>Papop Lekhapanyaporn</h2>
+                        <h3>Pop</h3>
+                        <h3>
+                          {new Date().getFullYear() -
+                            new Date(
+                              "March 20, 2003 00:00:00"
+                            ).getFullYear()}{" "}
+                          Years Old
+                        </h3>
+                        <h3>From Bangkok,Thailand</h3>
+                        <p>
+                          <FontAwesomeIcon icon={faMapPin} /> Bangkok,Thailand
+                        </p>
+                        <div>
+                          <Link href="mailto:papop2003@gmail.com" passHref>
+                            <span>
+                              <FontAwesomeIcon icon={faEnvelope} size="2x" />
+                              <p>E-mail</p>
+                            </span>
+                          </Link>
+                          <Link
+                            href="https://www.instagram.com/__pop.p/"
+                            passHref
+                          >
+                            <span>
+                              <FontAwesomeIcon icon={faInstagram} size="2x" />
+                              <p>Instagram</p>
+                            </span>
+                          </Link>
+                          <Link href="https://github.com/Retaehc-pop" passHref>
+                            <span>
+                              <FontAwesomeIcon icon={faGithub} size="2x" />
+                              <p>Github</p>
+                            </span>
+                          </Link>
+                          <Link href="tel:+66898118068" passHref>
+                            <span>
+                              <FontAwesomeIcon icon={faPhone} size="2x" />
+                              <p>Phone</p>
+                            </span>
+                          </Link>
+                          <Link
+                            href="https://stackoverflow.com/users/14537225/papop-lekhapanyaporn"
+                            passHref
+                          >
+                            <span>
+                              <FontAwesomeIcon
+                                icon={faStackOverflow}
+                                size="2x"
+                              />
+                              <p>Stack overflow</p>
+                            </span>
+                          </Link>
+                          <Link
+                            href="https://www.linkedin.com/in/papop-lekhapanyaporn-2386b5229/"
+                            passHref
+                          >
+                            <span>
+                              <FontAwesomeIcon icon={faLinkedin} size="2x" />
+                              <p>Linked In</p>
+                            </span>
+                          </Link>
+                          <Link
+                            href="https://discordapp.com/users/267572826418970624"
+                            passHref
+                          >
+                            <span>
+                              <FontAwesomeIcon icon={faDiscord} size="2x" />
+                              <p>Discord</p>
+                            </span>
+                          </Link>
+                        </div>
+                      </animated.section>
                     )}
                   </Spring>
                 )}
               </VisibilitySensor>
-              <VisibilitySensor partialVisibility>
-              {({ isVisible }) => (
-                <section>
-                  <Spring
-                    delay={300}
-                    to={{
-                      borderRadius: isVisible ? "50%" : "0%",
-                      opacity: isVisible ? 1 : 0,
-                    }}
-                  >{(props) => (
-                    <animated.img style={{...props}} alt="profilepic" src="static/profile.jpg" />
-                  )}
-                  </Spring>
-                </section>
-                )}
-              </VisibilitySensor>
-            </ParallaxLayer>
-
-            <ParallaxLayer offset={2} speed={0.7} className={styles.education}>
               <VisibilitySensor partialVisibility>
                 {({ isVisible }) => (
                   <section>
                     <Spring
                       delay={300}
                       to={{
-                        transform: isVisible
-                          ? "translateX(0)"
-                          : "translateX(400px)",
+                        borderRadius: isVisible ? "50%" : "0%",
                         opacity: isVisible ? 1 : 0,
                       }}
                     >
                       {(props) => (
-                        <animated.div style={{ ...props }}>
-                          <h1>Education</h1>
-                        </animated.div>
+                        <animated.img
+                          style={{ ...props }}
+                          alt="profilepic"
+                          src="static/profile.jpg"
+                        />
                       )}
                     </Spring>
-                    <Trails open={isVisible}>
-                      <div>
-                        <span>
-                          <h3>Present</h3>
-                        </span>
-                        <span>
-                          <h2>RWTH Aachen University</h2>
-                          <h4>Bachlor of Science Computer Sciene</h4>
-                        </span>
-                        <span>
-                          <Image src="/static/RWTHAachen.jpg" alt="RWTH"/>
-                        </span>
-                      </div>
-
-                      <div>
-                        <span>
-                          <h3>2022</h3>
-                        </span>
-                        <span>
-                          <h2>Assumption College</h2>
-                          <h4>Science - Engineering</h4>
-                          <p>GPAX:3.64</p>
-                        </span>
-                        <span>
-                          <Image src="/static/AssumptionCollege.jpg" alt="assumptionCollege"/>
-                        </span>
-                      </div>
-                    </Trails>
                   </section>
                 )}
               </VisibilitySensor>
@@ -663,6 +614,8 @@ const Home: NextPage = () => {
                           ? project.image[0]
                           : "/static/AssumptionCollege.jpg"
                       }
+                      width="100%"
+                      height="100%"
                       alt={project.name}
                     />
                   </div>
@@ -670,7 +623,14 @@ const Home: NextPage = () => {
                 <Modal onClose={() => setOpenProject(false)} open={openProject}>
                   <div className={styles.modal}>
                     <div className={styles.img}>
-                      <Image src={project.image[0]} alt={project.name}/>
+                      <Image
+                        src={project.image[0]}
+                        className={styles.image}
+                        objectFit="contain"
+                        width="100%"
+                        height="100%"
+                        alt={project.name}
+                      />
                       <i style={{ left: "5%" }}>
                         <FontAwesomeIcon icon={faCircleChevronLeft} />
                       </i>
