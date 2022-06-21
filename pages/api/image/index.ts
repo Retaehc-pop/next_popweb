@@ -52,34 +52,18 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
         error: "No file",
       });
     }
-    // return res.status(201).json({msg: files});
-    // try {
-    //   for (let i=0; i<files.lenght; i++){
-    //     await s3Client.putObject({
-    //             Bucket: process.env.NEXT_PUBLIC_BUCKET,
-    //             Key: files[i].demo.originalFilename,
-    //             Body: fs.createReadStream(files[i].image.filepath),
-    //             ACL: "public-read"
-    //           }, async()=>res.status(201).json({message:"Uploaded"}))
-    //   }
-    // } catch (err) {
-    //   return res.status(500).json({
-    //           error: err.message
-    //         });
-    // }
-    // const le = files.length;
     try {
       return s3Client.putObject({
             Bucket: process.env.NEXT_PUBLIC_BUCKET,
             Key: files.image.originalFilename,
             Body: fs.createReadStream(files.image.filepath),
             ACL: "public-read"
-          }, async()=>res.status(201).json({message:files}));
+          }, async()=>res.status(201).json({alt:files.image.originalFilename,url:`${process.env.NEXT_PUBLIC_ENDPOINT}/${process.env.NEXT_PUBLIC_BUCKET}/${files.image.originalFilename}`}))
         }
-        catch (err) {
-          return res.status(500).json({
-            error: err.message
-          });
-      }
+      catch (err) {
+        return res.status(500).json({
+          error: err.message
+        });
+    }
   });
 }

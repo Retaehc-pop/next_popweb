@@ -24,7 +24,7 @@ function Modal({ open, onClose, children }) {
         <span id="backdrop">
             <FontAwesomeIcon id="backdrop" onClick={handleCloseClick} icon={faXmark} size="2x"/>
         </span>
-        <section onClick={()=>{}}>
+        <section>
           {children}
         </section>
       </div>:null)

@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
@@ -66,7 +66,7 @@ model Experience {
   current      Boolean
   description  String
   project      Project  @relation(fields: [projectId], references: [id])
-  projectId    Int
+  projectId    Int      @unique
 }
 
 model Category {
@@ -111,13 +111,13 @@ model CategoriesOnProject {
   category     Category @relation(fields: [categoryName], references: [name])
   categoryName String
   assignedAt   DateTime @default(now())
-
   @@id([projectId, categoryName])
 }
 
 model Image {
   id        String  @id @default(cuid())
-  publicId  String  @unique
+  url       String  @unique
+  alt       String?
   project   Project @relation(fields: [projectId], references: [id])
   projectId Int
 }

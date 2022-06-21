@@ -13,6 +13,7 @@ import {
   faPlus,
   faProjectDiagram,
   faUser,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import Select from "react-select";
 import { FileUploader } from "react-drag-drop-files";
@@ -34,7 +35,7 @@ export async function getServerSideProps() {
 
   return {
     props: {
-      project: languageData,
+      project: projectData,
       language: languageData,
       category: categoryData,
     },
@@ -99,7 +100,7 @@ const Project = ({ projects, categories, languages }) => {
   const [project, setProject] = useState({
     name: "",
     description: "",
-    image: null,
+    image: [],
     category: [],
     language: [],
     github: "",
@@ -116,33 +117,23 @@ const Project = ({ projects, categories, languages }) => {
     return toselect;
   }
   const [isNew, setIsNew] = useState(false);
-  async function tessst(resi){
-    let formData = new FormData();
-    formData.append('demo', resi);
-    const response = await fetch(`api/image`,
-        {
-            method: 'POST',
-            body: formData
-        },  
-    );
+  async function uploadProject(){
+    const response = await fetch("http://localhost:3000/api/project", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(project),
+    });
+    const data = await response.json();
+    console.log(data);
   }
-  async function uploadFile(event) {
-    const file = event.formData;
-    const imgs = [];
-    // console.log(file)
-    console.log(event.xhr.response);
-    console.log(event.files);
-    // file.forEach((item)=>imgs.push(item.name)).then(console.log(imgs))
-    // const fileReader = new FileReader();
-    // let formData = new FormData();
-    // formData.append("demo", file);
-    // const response = await fetch(`api/image`,
-    //     {
-    //         method: 'POST',
-    //         body: formData
-    //     });
-    // const res = await response.json();
-    // alert(res)
+  async function uploadDone(event){
+    const res =  event.xhr.response;
+    const newimglink = JSON.parse(res);
+    const newimg = project.image
+    newimg.push(newimglink)
+    setProject({...project, image: newimg});
   }
 
   return (
@@ -237,28 +228,25 @@ const Project = ({ projects, categories, languages }) => {
                   </div>
                 </section>
                 <section className={styles.dragdrop}>
-                  {/* <FileUploader
-                    multiple={true}
-                    handleChange={(file) =>
-                      setProject({ ...project, image: file })
+                  <FileUpload name="image" url="/api/image" auto onUpload={uploadDone}></FileUpload>
+                  <div className={styles.formcol}>
+                    <label htmlFor="image">Image</label>
+                    {
+                    project.image.map((item)=>(
+                      <div key={item.alt}>
+                        <img src={item.url} alt={item.alt}/>
+                        <FontAwesomeIcon icon={faXmark} onClick={()=>setProject(
+                          {...project,
+                          image:project.image.filter((e)=>e!==item)
+                          })}/>
+                      </div>
+                    ))
                     }
-                    name="file"
-                    types={["JPEG", "PNG", "GIF"]}
-                  /> */}
-                  <FileUpload name="image" url="/api/image" onUpload={uploadFile} multiple></FileUpload>
-                  {/* {project.image ? (
-                    <div className={styles.imageuploaded}>
-                      {[...project.image].map((file, index) => (
-                        <img key={file.name} src={URL.createObjectURL(file)} />
-                      ))}
-                    </div>
-                  ) : (
-                    <p>No file selected</p>
-                  )} */}
+                  </div>
                 </section>
               </div>
               <div className={styles.form__button}>
-                <button type="submit">Submit</button>
+                <button onClick={()=>uploadProject()} >Submit</button>
                 <button
                   onClick={() => {
                     setProject({

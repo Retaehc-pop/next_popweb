@@ -9,7 +9,6 @@
 
   section{
   width: 90%;
-  
   position: relative;
   display: flex;
   flex-direction: column;
@@ -58,23 +57,34 @@
       }
       .dragdrop{
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100%;
         width: 100%;
         padding: 1rem;
-        .imageuploaded{
-          display: grid;
-          width: 100%;
-          height: 100%;
-          grid-template-columns: repeat(5, 1fr);
-          justify-content: space-evenly;
+        .formcol{
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
           align-items: center;
-          img{
-            object-fit: cover;
-            width: 80%;
-            height: 80%;
-          }        
+          width: 100%;
+          margin-bottom: 2%;
+          div{
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            width: 100%;
+            height: 5rem;
+            p{
+              font-size: 0.5rem;
+            }
+            img{
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
         }
       }
     }

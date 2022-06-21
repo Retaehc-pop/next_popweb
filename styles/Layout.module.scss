@@ -184,6 +184,7 @@
   }
 }
 .modalclose{
+  opacity: 0;
   display: none;
   z-index: -1;
   transition: ease-in-out 1s all;
