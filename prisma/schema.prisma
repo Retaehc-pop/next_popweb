@@ -89,7 +89,7 @@ model Project {
   images      Image[]
   experience  Experience?
   github      String?
-  language    LanguageOnProject[]
+  languages   LanguageOnProject[]
   categories  CategoriesOnProject[]
   createdAt   DateTime              @default(now())
   updatedAt   DateTime              @updatedAt
@@ -111,6 +111,7 @@ model CategoriesOnProject {
   category     Category @relation(fields: [categoryName], references: [name])
   categoryName String
   assignedAt   DateTime @default(now())
+
   @@id([projectId, categoryName])
 }
 

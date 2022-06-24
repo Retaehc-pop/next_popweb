@@ -148,7 +148,7 @@
 }
 
 .modal{
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -158,34 +158,15 @@
   align-items: center;
   background-color: rgba(0,0,0,0.5);
   transition: ease-in-out 1s all;
+  overflow-y: hidden;
   h1{
     font-size: 3rem;
     font-weight: 900;
   }
-  section{
+  .section{
     width: 70%;
     height: 90%;
-    display: flex;
-    // flex-direction: column;
     border-radius: 15px;
     background-color: var(--color-background);
   }
-  span{
-    position:absolute;
-    right: 2%; 
-    top: 2%;
-    height: fit-content;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    color: var(--color-background);
-    padding:1rem;
-  }
-}
-.modalclose{
-  opacity: 0;
-  display: none;
-  z-index: -1;
-  transition: ease-in-out 1s all;
 }

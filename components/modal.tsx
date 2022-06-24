@@ -4,7 +4,7 @@ import styles from "../styles/Layout.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
-function Modal({ open, onClose, children }) {
+function Modal({ open, onClose, children}) {
     const [isBrowser, setIsBrowser] = useState(false);
   
     useEffect(() => {
@@ -21,10 +21,7 @@ function Modal({ open, onClose, children }) {
 
     const modalContent =(open ? 
       <div className={styles.modal} id="backdrop" onClick={handleCloseClick}>
-        <span id="backdrop">
-            <FontAwesomeIcon id="backdrop" onClick={handleCloseClick} icon={faXmark} size="2x"/>
-        </span>
-        <section>
+        <section className={styles.section}>
           {children}
         </section>
       </div>:null)

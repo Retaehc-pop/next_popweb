@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Image } from "@prisma/client";
+import prisma from "../../../components/prisma";
 import formidable from "formidable";
 import fs from "fs";
 import AWS from "aws-sdk";
@@ -53,12 +54,19 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
       });
     }
     try {
-      return s3Client.putObject({
+        const response =  await prisma.image.create({
+          data:{
+            alt: `${files.image.originalFilename}`,
+            url:`${process.env.NEXT_PUBLIC_ENDPOINT}/${process.env.NEXT_PUBLIC_BUCKET}/${files.image.originalFilename}`,
+          }
+        })
+        return s3Client.putObject({
             Bucket: process.env.NEXT_PUBLIC_BUCKET,
             Key: files.image.originalFilename,
             Body: fs.createReadStream(files.image.filepath),
             ACL: "public-read"
-          }, async()=>res.status(201).json({alt:files.image.originalFilename,url:`${process.env.NEXT_PUBLIC_ENDPOINT}/${process.env.NEXT_PUBLIC_BUCKET}/${files.image.originalFilename}`}))
+          }, 
+          async()=>res.status(201).json({alt:files.image.originalFilename,url:`${process.env.NEXT_PUBLIC_ENDPOINT}/${process.env.NEXT_PUBLIC_BUCKET}/${files.image.originalFilename}`}))
         }
       catch (err) {
         return res.status(500).json({
