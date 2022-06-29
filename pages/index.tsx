@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.scss";
@@ -10,20 +10,10 @@ import { faAddressCard, faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faLogo } from "../components/icons";
 import {
   Spring,
-  Trail,
-  Transition,
-  animated,
-  useChain,
-  useTrail,
-  useTransition,
-  useSpringRef,
-  useSpring,
-  useSprings,
-  config,
+  animated
 } from "react-spring";
 import VisibilitySensor from "react-visibility-sensor";
 import {
-  faChevronDown,
   faCode,
   faCrown,
   faDiagramProject,
@@ -31,16 +21,10 @@ import {
   faC,
   faInfinity,
   faDatabase,
-  faR,
   faWindowMaximize,
   faFire,
   faPhone,
-  faLocationPin,
   faMapPin,
-  faChevronLeft,
-  faChevronRight,
-  faCircleChevronRight,
-  faCircleChevronLeft,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faPython,
@@ -52,13 +36,13 @@ import {
   faHtml5,
   faGithub,
   faEthereum,
-  faNode,
   faUbuntu,
   faNodeJs,
   faStackOverflow,
   faInstagram,
   faLinkedin,
   faDiscord,
+  IconDefinition,
 } from "@fortawesome/free-brands-svg-icons";
 import {
   faCplusplus,
@@ -68,156 +52,87 @@ import {
 } from "../components/icons/";
 import Modal from "../components/modal";
 import SideBar, { SideBarProps } from "../components/sidebar";
+import { Project } from "@prisma/client";
+import { fullProject } from "../components/prisma"
 
-const Trails = ({ open, children }: { open: boolean; children: any }) => {
-  const items = React.Children.toArray(children);
-  const trail = useTrail(items.length, {
-    config: { mass: 5, tension: 2000, friction: 200 },
-    opacity: open ? 1 : 0,
-    x: open ? 0 : 20,
-    height: open ? 110 : 0,
-    from: { opacity: 0, x: 20, height: 0 },
-  });
-  return (
-    <>
-      {trail.map(({ height, ...style }, index) => (
-        <animated.div key={index} style={style}>
-          <animated.div style={{ height }}>{items[index]}</animated.div>
-        </animated.div>
-      ))}
-    </>
-  );
-};
+export async function getServerSideProps() {
+  const project = await fetch("http://localhost:3000/api/project");
+  const projectData = await project.json();
+  return {
+    props: {
+      projects: projectData,
+    },
+  };
+}
 
-const projects = [
-  {
-    id: 1,
-    name: "proj1",
-    description: "lorem ipsum",
-    image: [
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-    ],
-  },
-  {
-    id: 2,
-    name: "proj2",
-    description: "lorem ipsum",
-    image: [
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-    ],
-  },
-  {
-    id: 3,
-    name: "proj3",
-    description: "lorem ipsum",
-    image: [
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-    ],
-  },
-  {
-    id: 4,
-    name: "proj4",
-    description: "lorem ipsum",
-    image: [
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-    ],
-  },
-  {
-    id: 5,
-    name: "proj5",
-    description: "lorem ipsum",
-    image: [
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-    ],
-  },
-  {
-    id: 6,
-    name: "proj6",
-    description: "lorem ipsum",
-    image: [
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-    ],
-  },
-  {
-    id: 7,
-    name: "proj7",
-    description: "lorem ipsum",
-    image: [
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-      "/static/profile.jpg",
-    ],
-  },
-];
-const Home: NextPage = () => {
+const Home: NextPage = ({projects}:{projects: fullProject[];}) => {
   const date = new Date();
   const parallax = useRef<IParallax>(null!);
 
   const parallaxScrollTo = (page) => {
-    if (parallax.current!==null) {
+    if (parallax.current !== null) {
       parallax.current.scrollTo(page);
     }
-  }
+  };
 
   const sidebarItem: SideBarProps[] = [
     {
       name: "About me",
       href: "#about",
       icon: faUser,
-      onClick: ()=>parallaxScrollTo(1),
+      onClick: () => parallaxScrollTo(1),
     },
     {
       name: "Experties",
       href: "#Experties",
       icon: faCode,
-      onClick: ()=>parallaxScrollTo(2),
+      onClick: () => parallaxScrollTo(2),
     },
     {
       name: "Projects",
       href: "#Projects",
       icon: faDiagramProject,
-      onClick: ()=>parallaxScrollTo(3),
+      onClick: () => parallaxScrollTo(3),
     },
     {
       name: "Experience",
       href: "#Experience",
       icon: faCrown,
-      onClick: ()=>parallaxScrollTo(4),
+      onClick: () => parallaxScrollTo(4),
     },
     {
       name: "Contact",
       href: "#contact",
       icon: faAddressCard,
-      onClick: ()=>parallaxScrollTo(5),
+      onClick: () => parallaxScrollTo(5),
     },
   ];
 
-  const [project, setProject] = useState({
-    id: 0,
-    name: "",
-    description: "",
-    image: [],
-  });
-
+  const hexagonalTile = (props) => {
+    const [hexItem, setHexItem] = React.useState(props);
+    return (
+      <div className={styles.hex}>
+        {hexItem.map((item) =>
+          item.name === "none" ? (
+            <div key={item.name}>
+              <div style={{ background: "transparent" }}></div>
+            </div>
+          ) : (
+            <div key={item.name}>
+              <div>
+                <i>
+                  <FontAwesomeIcon icon={item.icon} />
+                </i>
+                <p>{item.name}</p>
+              </div>
+            </div>
+          )
+        )}
+      </div>
+    );
+  };
+  const [project, setProject] = useState<fullProject>();
+  console.log(projects);
   const [openProject, setOpenProject] = useState(false);
   return (
     <>
@@ -225,10 +140,10 @@ const Home: NextPage = () => {
         <title>Home</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-        <SideBar item={sidebarItem} name="Home" />
+      <SideBar item={sidebarItem} name="Home" />
       <main className={styles.main}>
         <section className={styles.parallax}>
-          <Parallax ref={parallax} pages={10}>
+          <Parallax ref={parallax} pages={5}>
             <ParallaxLayer offset={0} speed={0.1} className={styles.landing}>
               <VisibilitySensor partialVisibility>
                 {({ isVisible }) => (
@@ -248,13 +163,6 @@ const Home: NextPage = () => {
                 )}
               </VisibilitySensor>
               <FontAwesomeIcon icon={faLogo} className={styles.icon} />
-            </ParallaxLayer>
-
-            <ParallaxLayer offset={0} speed={0.5} className={styles.chevron}>
-              <FontAwesomeIcon
-                icon={faChevronDown}
-                onClick={() => parallax.current.scrollTo(1)}
-              />
             </ParallaxLayer>
 
             <ParallaxLayer offset={1} speed={0.6} className={styles.about}>
@@ -370,261 +278,71 @@ const Home: NextPage = () => {
                 )}
               </VisibilitySensor>
             </ParallaxLayer>
-            <ParallaxLayer offset={3} speed={0.6} className={styles.experties}>
+            <ParallaxLayer offset={2} speed={0.6} className={styles.experties}>
               <div>
                 <h1>Experties</h1>
               </div>
-              <section style={{ justifyItems: "center" }}>
-                <h3>Coding</h3>
-                <h3>since</h3>
-                <h3>2015</h3>
-              </section>
               <section>
-                <div className={styles.first}>
-                  <div>
-                    <div style={{ background: "transparent" }}></div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faPython} />
-                      </i>
-                      <p>python</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faDatabase} />
-                      </i>
-                      <p>MySQL</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faUbuntu} />
-                      </i>
-                      <p>Linux</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faCode} />
-                      </i>
-                      <p>Coding</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faC} />
-                      </i>
-                      <p>C</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ background: "transparent" }}></div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faCplusplus} />
-                      </i>
-                      <p>C++</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faGithub} />
-                      </i>
-                      <p>Github</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className={styles.first}>
-                  <div>
-                    <div style={{ background: "transparent" }}></div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faPrisma} />
-                      </i>
-                      <p>Prisma.io</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faTypeScript} />
-                      </i>
-                      <p>TypeScript</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faJs} />
-                      </i>
-                      <p>JavaScript</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faWindowMaximize} />
-                      </i>
-                      <p>Web Dev</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faSass} />
-                      </i>
-                      <p>Sass/Scss</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ background: "transparent" }}></div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faHtml5} />
-                      </i>
-                      <p>HTML</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faCss3Alt} />
-                      </i>
-                      <p>CSS</p>
-                    </div>
-                  </div>
-                </div>
-                <div className={styles.first}>
-                  <div>
-                    <div style={{ background: "transparent" }}></div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faRaspberryPi} />
-                      </i>
-                      <p>RaspberryPi</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faInfinity} />
-                      </i>
-                      <p>Ardino</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faEthereum} />
-                      </i>
-                      <p>Solidity</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faNodeJs} />
-                      </i>
-                      <p>Node.Js</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faFire} />
-                      </i>
-                      <p>Pytorch</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ background: "transparent" }}></div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faNextJs} />
-                      </i>
-                      <p>Next.js</p>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <i>
-                        <FontAwesomeIcon icon={faReact} />
-                      </i>
-                      <p>React</p>
-                    </div>
-                  </div>
-                </div>
+                {
+                hexagonalTile([{name: "none",icon: null},
+                    {name: "Python",icon: faPython},
+                    {name: "mySQL",icon: faDatabase},
+                    {name: "ubuntu",icon: faUbuntu},
+                    {name: "Coding",icon: faCode},
+                    {name: "C",icon: faC},
+                    {name: "none",icon: null},
+                    {name: "C++",icon: faCplusplus},
+                    {name: "github",icon: faGithub},])
+                }{
+                  hexagonalTile([{name: "none",icon: null},
+                      {name: "Prisma.io",icon: faPrisma},
+                      {name: "TypeScript",icon: faTypeScript},
+                      {name: "JavaScript",icon: faJs},
+                      {name: "Web Dev",icon: faWindowMaximize},
+                      {name: "Sass/Scss",icon: faSass},
+                      {name: "none",icon: null},
+                      {name: "HTML5",icon: faHtml5},
+                      {name: "CSS",icon: faCss3Alt},])
+                  }
+                  {
+                  hexagonalTile([{name: "none",icon: null},
+                      {name: "RaspberryPi",icon: faRaspberryPi},
+                      {name: "Ardino",icon: faInfinity},
+                      {name: "Solidity",icon: faEthereum},
+                      {name: "Node.Js",icon: faNodeJs},
+                      {name: "Pytorch",icon: faFire},
+                      {name: "none",icon: null},
+                      {name: "Next.js",icon: faNextJs},
+                      {name: "React",icon: faReact},])
+                  }
               </section>
             </ParallaxLayer>
 
-            <ParallaxLayer offset={4} speed={0.5} className={styles.projects}>
-              <section>
+            <ParallaxLayer offset={3} speed={0.5} className={styles.projects}>
                 <h1>Project</h1>
-              </section>
-              <section className={styles.imagegallary}>
-                <div>
-                  <i>
-                    <FontAwesomeIcon icon={faCode} size="4x" />
-                  </i>
-                </div>
                 <section>
-                  <span>
-                    <p>{projects.length}</p>
-                    <h4>Project</h4>
-                  </span>
-                  <span>
-                    <p>2</p>
-                    <h4>On-going</h4>
-                  </span>
-                  <span>
-                    <p>5</p>
-                    <h4>Competition</h4>
-                  </span>
+
                 </section>
-                {projects.map((project, index) => (
-                  <div
-                    key={index}
-                    onClick={() => {
-                      setProject(project);
-                      setOpenProject(true);
-                    }}
-                  >
-                    <Image
-                      src={
-                        project.image.length !== 0
-                          ? project.image[0]
-                          : "/static/AssumptionCollege.jpg"
-                      }
-                      width="100%"
-                      height="100%"
-                      alt={project.name}
-                    />
-                  </div>
-                ))}
-                <Modal onClose={() => setOpenProject(false)} open={openProject}>
+                {/* <section className={styles.showcase}>
+                  {projects.map((project, index) => (
+                    <div key={project.id} onClick={() => {setProject(project);setOpenProject(true);}}>
+                      <Image src={
+                          project.images ?
+                            project.images[0].url
+                            : "/static/AssumptionCollege.jpg"
+                        }
+                        width="100%"
+                        height="100%"
+                        alt={project.name}
+                      />
+                    </div>
+                  ))}
+                </section> */}
+                {/* <Modal onClose={() => setOpenProject(false)} open={openProject}>
                   <div className={styles.modal}>
                     <div className={styles.img}>
                       <Image
-                        src={project.image[0]}
+                        src={project.images[0].url}
                         className={styles.image}
                         objectFit="contain"
                         width="100%"
@@ -643,11 +361,10 @@ const Home: NextPage = () => {
                       <p>{project.description}</p>
                     </div>
                   </div>
-                </Modal>
-              </section>
+                </Modal> */}
             </ParallaxLayer>
 
-            <ParallaxLayer offset={5} speed={0.5} className={styles.projects}>
+            <ParallaxLayer offset={4} speed={0.5} className={styles.experience}>
               <section>
                 <h1>Experience</h1>
               </section>

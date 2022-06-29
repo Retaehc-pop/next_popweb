@@ -24,8 +24,8 @@ export default async function handle(req:NextApiRequest,res:NextApiResponse){
             })
             });
         break;
-      case "PATCH":
-        handlePatch(req,res).then(() => {
+      case "PUT":
+        handlePut(req,res).then(() => {
           resolve(res);
         }).catch(err => {
           return res.status(400).json({
@@ -48,22 +48,76 @@ async function handleGet(req:NextApiRequest,res:NextApiResponse){
   const result:Project = await prisma.project.findUnique({
     where:{
       name:name
+    },
+    include:{
+      categories: true,
+      languages: true,
+      images: true
     }
   });
   return res.status(200).json(result);
 }
 
-async function handlePatch(req:NextApiRequest,res:NextApiResponse){
+async function handlePut(req:NextApiRequest,res:NextApiResponse){
   const name = `${req.query.name}`;
-
+  const data = req.body;
+  
+  const original = await prisma.project.findUnique({
+    where:{
+      name:name
+    },
+    include:{
+      categories: true,
+      languages: true,
+      images: true
+    }
+  });
+  const result = await prisma.project.update({
+    where:{
+      name:name
+    },
+    data:{
+      name:data.name,
+      description:data.description,
+      github:data.github,
+      published:data.published
+    }
+  });
+  return res.status(200).json(result);
 }
 
 async function handleDelete(req:NextApiRequest,res:NextApiResponse){
   const name = `${req.query.name}`;
+  const original = await prisma.project.findUnique({
+    where:{
+      name:name
+    },
+  })
+  const cat = await prisma.categoriesOnProject.deleteMany({
+    where:{
+      project:{
+        id:original.id
+      }
+    }
+  })
+  const lang = await prisma.languageOnProject.deleteMany({
+    where:{
+      project:{
+        id:original.id
+      }
+    }
+  })
+  const img = await prisma.image.deleteMany({
+    where:{
+      project:{
+        id:original.id
+      }
+    }
+  })
   const result = await prisma.project.delete({
     where:{
       name:name
     }
-  });
+  })
   return res.status(200).json(result);
 }

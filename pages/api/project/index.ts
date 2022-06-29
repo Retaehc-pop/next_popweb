@@ -54,10 +54,10 @@ async function handlePost(req:NextApiRequest,res:NextApiResponse){
         name: data.name,
         description: data.description,
         github: data.github,
-        published: true 
+        published: data.published, 
         }
     });
-    data.category.forEach(async (category) => {
+    data.categories.forEach(async (category) => {
       await prisma.categoriesOnProject.create({
         data: {
           project: {
@@ -74,7 +74,7 @@ async function handlePost(req:NextApiRequest,res:NextApiResponse){
       });
     }
     );
-    data.language.forEach(async (language) => {
+    data.languages.forEach(async (language) => {
       await prisma.languageOnProject.create({
         data: {
           project: {
@@ -91,7 +91,7 @@ async function handlePost(req:NextApiRequest,res:NextApiResponse){
       });
     }
     );
-    data.image.forEach(async (image) => {
+    data.images.forEach(async (img) => {
       await prisma.image.create({
         data: {
           project: {
@@ -99,13 +99,13 @@ async function handlePost(req:NextApiRequest,res:NextApiResponse){
               id: result.id
             }
           },
-          url: image.url,
-          alt: image.alt
+          url: img.url,
+          alt: img.alt
         }
       });
-    }
+      }
     );
-    return res.status(200).json(result);
+    return res.status(200).json(data);
   }
   catch(err){
     return res.status(400).json({

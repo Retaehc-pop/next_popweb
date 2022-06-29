@@ -1,0 +1,93 @@
+.main{
+  min-height: 100vh;
+  width: 100vw;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  h1{
+    font-size: 3rem;
+  }
+  h2{
+    font-size: 2.5rem;
+  }
+}
+
+.landing{
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    span{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}
+.showcase{
+  width: 50%;
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  grid-gap: 1rem;
+  .project__container{
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1/1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img{
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1/1;
+      object-fit: cover;
+      object-position: center;
+    }
+    p{
+      opacity: 0;
+      position: absolute;
+    }
+    &:hover{
+      transition: all 0.2s ease-in-out;
+      p{
+        transition: all 0.2s ease-in-out;
+        opacity: 1;
+      }
+      img{
+        transition: all 0.2s ease-in-out;
+        opacity: 0.5;
+      }
+    }
+  }
+}
+.modal{
+  width: 100%;
+  height: 100%;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  section{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .images{
+    
+  }
+  .infos{
+    flex-direction: column;
+  }
+}

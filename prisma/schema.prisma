@@ -119,6 +119,6 @@ model Image {
   id        String  @id @default(cuid())
   url       String  @unique
   alt       String?
-  project   Project @relation(fields: [projectId], references: [id])
-  projectId Int
+  project   Project? @relation(fields: [projectId], references: [id])
+  projectId Int?
 }

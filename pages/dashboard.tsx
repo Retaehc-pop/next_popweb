@@ -1,29 +1,55 @@
 import type { NextPage } from "next";
-import Link from "next/link";
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import Image from "next/image";
+import SideBar, { SideBarProps } from "../components/sidebar";
 import styles from "../styles/Dashboard.module.scss";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import {
-  faClose,
   faGroupArrowsRotate,
-  faLanguage,
-  faPlus,
   faProjectDiagram,
   faUser,
+  faLanguage,
+  faPlus,
+  faToggleOn,
+  faToggleOff,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import Select from "react-select";
+import { Carousel } from "primereact/carousel";
+import { Button } from "primereact/button";
+import Modal from "../components/modal";
+import { Project, Language, Category } from "@prisma/client";
+import Link from "next/link";
+import { ActionMeta, OnChangeValue } from "react-select";
+import { faGit, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FileUploader } from "react-drag-drop-files";
-import { FileUpload } from "primereact/fileupload";
-import "primereact/resources/themes/lara-light-blue/theme.css";
-import "primereact/resources/primereact.min.css";
-import "primeicons/primeicons.css";
+import Select from "react-select";
+import CreatableSelect from "react-select/creatable";
 
-import { Category, Language, Project } from "@prisma/client";
-import SideBar, { SideBarProps } from "../components/sidebar";
+const sideBarItem: SideBarProps[] = [
+  {
+    name: "Project",
+    icon: faProjectDiagram,
+    href: "#project",
+  },
+  {
+    name: "faUser",
+    icon: faUser,
+    href: "#user",
+  },
+  {
+    name: "Language",
+    icon: faLanguage,
+    href: "#language",
+  },
+  {
+    name: "Category",
+    icon: faGroupArrowsRotate,
+    href: "#category",
+  },
+];
+
 export async function getServerSideProps() {
   const project = await fetch("http://localhost:3000/api/project");
   const language = await fetch("http://localhost:3000/api/language");
@@ -35,345 +61,413 @@ export async function getServerSideProps() {
 
   return {
     props: {
-      project: projectData,
-      language: languageData,
-      category: categoryData,
+      projects: projectData,
+      languages: languageData,
+      categories: categoryData,
     },
   };
 }
 
-const Dashboard: NextPage = ({
-  project,
-  language,
-  category,
-}: {
-  project: Project;
-  language: Language;
-  category: Category;
-}) => {
-  const router = useRouter();
-  const date = new Date();
-  const sideBarItem: SideBarProps[] = [
-    {
-      name: "Project",
-      icon: faProjectDiagram,
-      href: "#project",
-    },
-    {
-      name: "faUser",
-      icon: faUser,
-      href: "#user",
-    },
-    {
-      name: "Language",
-      icon: faLanguage,
-      href: "#language",
-    },
-    {
-      name: "Category",
-      icon: faGroupArrowsRotate,
-      href: "#category",
-    },
-  ];
+function remapObjectToSelect(obj: any) {
+  let toselect = [];
+  for (let i = 0; i < obj.length; i++) {
+    toselect.push({
+      value: obj[i].name,
+      label: obj[i].name,
+    });
+  }
+  return toselect;
+}
 
+const Test: NextPage = ({
+  projects,
+  languages,
+  categories,
+}: {
+  projects: any[];
+  languages: Language[];
+  categories: Category[];
+}) => {
+  const [openModal, setOpenModal] = useState(false);
+  const [selectProject, setSelectProject] = useState({
+    id: 1,
+    name: "Product 1",
+    published: false,
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+    images: [],
+    github: "github test link",
+    languages: [],
+    categories: [],
+  });
+  const [isNew, setIsNew] = useState(false);
+  const languageOption = remapObjectToSelect(languages);
+  const categoryOption = remapObjectToSelect(categories);
+  const [imageHolder, setImageHolder] = useState([]);
+
+  async function uploadImage(image: File) {
+    var formData = new FormData();
+    formData.append("image", image, image.name);
+    const result = await fetch("http://localhost:3000/api/image", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await result.json();
+    return data;
+  }
+
+  async function createTag(item, tag) {
+    const res = await fetch(`http://localhost:3000/api/${tag}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name: item }),
+    });
+    if (res.status === 200){
+      const data = await res.json();
+      if (tag==="categories"){
+        categories.push({id:data.id, name: item});
+      }
+      else if (tag==="languages"){
+        languages.push({id:data.id, name: item});
+      }
+    }
+    else{
+      alert("something went wrong");
+    }
+    return res.json();
+  }
+
+  async function createProject() {
+    selectProject.languages.forEach((item) => {
+      if (item.hasOwnProperty("__isNew__")) {
+        createTag(item.value, "language").then((res) => console.log(res));
+      }
+    });
+    selectProject.categories.forEach((item) => {
+      if (item.hasOwnProperty("__isNew__")) {
+        createTag(item.value, "category").then((res) => console.log(res));
+      }
+    });
+
+    new Promise((resolve, reject) => {
+      imageHolder.forEach(async (item, index) => {
+        selectProject.images.push(await uploadImage(item));
+        if (selectProject.images.length === imageHolder.length) resolve(1);
+      });
+    })
+      .then((res) => {
+        return {
+          ...selectProject,
+          languages: [...selectProject.languages.map((item) => item.value)],
+          categories: [...selectProject.categories.map((item) => item.value)],
+        };
+      })
+      .then((newProject) => {
+        fetch("http://localhost:3000/api/project", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newProject),
+        }).then((res) => {
+          if (res.status === 200) {
+            setOpenModal(false);
+            setImageHolder([]);
+            setIsNew(false);
+            projects.push(selectProject);
+            alert("Project created");
+          } else {
+            alert("Error creating project");
+          }
+        });
+      });
+  }
+
+  async function saveProject() {
+    selectProject.languages.forEach((item) => {
+      if (item.hasOwnProperty("__isNew__")) {
+        createTag(item.value, "language").then((res) => console.log(res));
+      }
+    });
+    selectProject.categories.forEach((item) => {
+      if (item.hasOwnProperty("__isNew__")) {
+        createTag(item.value, "category").then((res) => console.log(res));
+      }
+    });
+
+    new Promise((resolve, reject) => {
+      imageHolder.forEach(async (item, index) => {
+        selectProject.images.push(await uploadImage(item));
+        if (selectProject.images.length === imageHolder.length) resolve(1);
+      });
+    }).then((res) => {
+      return {
+          ...selectProject,
+          languages: [...selectProject.languages.map((item) => item.value)],
+          categories: [...selectProject.categories.map((item) => item.value)],
+      };
+    }).then((newProject) => {
+      fetch(`http://localhost:3000/api/project/${selectProject.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProject),
+      }).then((res) => {
+        if (res.status === 200) {
+          setOpenModal(false);
+          setImageHolder([]);
+          setIsNew(false);
+          alert("Project saved");
+        } else {
+          alert("Error saving project");
+        }
+      });
+    }
+    );
+  }
+
+  async function deleteProject() {
+    if (confirm("Are you sure you want to delete this project?")) {
+      const res = await fetch(
+        `http://localhost:3000/api/project/${selectProject.name}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      if (res.status === 200) {
+        projects.filter((item) => item.name !== selectProject.name);
+        setImageHolder([]);
+        setIsNew(false);
+        alert(`Project ${selectProject.name} is deleted`);
+      } else {
+        alert("Something went wrong");
+      }
+    } else {
+      return;
+    }
+  }
   return (
     <>
       <Head>
-        <title>Backend</title>
-        <link rel="icon" href="/favicon.ico" />
+        <title>Test</title>
       </Head>
       <SideBar item={sideBarItem} name="dashboard" />
       <main className={styles.main}>
-        <Project
-          projects={project}
-          categories={category}
-          languages={language}
-        />
-        <Tag name={"language"} type={language} />
-        <Tag name={"category"} type={category} />
+        <section className={styles.project}>
+          <div className={styles.header}>
+            <h1>Test</h1>
+            <button
+              onClick={() => {
+                setOpenModal(true);
+                setSelectProject({
+                  id: 0,
+                  name: "",
+                  published: false,
+                  description: "",
+                  images: [],
+                  github: "",
+                  languages: [],
+                  categories: [],
+                });
+                setIsNew(true);
+              }}
+            >
+              <FontAwesomeIcon icon={faPlus} /> Creat New Project
+            </button>
+          </div>
+          <div className={styles.child}>
+            {projects.map((item) => (
+              <div
+                key={item.id}
+                className={styles.projects}
+                onClick={() => {
+                  setSelectProject(item);
+                  setOpenModal(true);
+                  setImageHolder([]);
+                  setIsNew(false);
+                }}
+              >
+                {item.images[0] ? (
+                  <img src={item.images[0].url} alt={item.images[0].alt} />
+                ) : (
+                  <img src="http://via.placeholder.com/150"></img>
+                )}
+                <p>{item.name}</p>
+              </div>
+            ))}
+            <Modal
+              onClose={() => {
+                setOpenModal(false);
+              }}
+              open={openModal}
+            >
+              <div className={styles.modal}>
+                <div className={styles.img}>
+                  <section className={styles.image}>
+                    {selectProject.images.map((item) => (
+                      <img src={item.url} alt={item.alt} />
+                    ))}
+                  </section>
+                  <section className={styles.upload}>
+                    {imageHolder.map((item, index) => (
+                      <span key={index}>
+                        <img src={URL.createObjectURL(item)} />
+                        <p>{item.name}</p>
+                        <FontAwesomeIcon
+                          icon={faXmark}
+                          onClick={() =>
+                            setImageHolder(
+                              imageHolder.filter((img) => img !== item)
+                            )
+                          }
+                        />
+                      </span>
+                    ))}
+                    <FileUploader
+                      handleChange={(e) => {
+                        setImageHolder([...e]);
+                      }}
+                      multiple
+                    />
+                  </section>
+                </div>
+                <div className={styles.info}>
+                  <section>
+                    <p>Name</p>
+                    <input
+                      value={selectProject.name}
+                      onChange={(e) => {
+                        setSelectProject({
+                          ...selectProject,
+                          name: e.target.value,
+                        });
+                      }}
+                    />
+                    <p>off</p>
+                    <span
+                      className={styles.published}
+                      onClick={() => {
+                        setSelectProject({
+                          ...selectProject,
+                          published: !selectProject.published,
+                        });
+                      }}
+                    >
+                      {selectProject.published ? (
+                        <FontAwesomeIcon
+                          icon={faToggleOn}
+                          size="2x"
+                        ></FontAwesomeIcon>
+                      ) : (
+                        <FontAwesomeIcon
+                          icon={faToggleOff}
+                          size="2x"
+                        ></FontAwesomeIcon>
+                      )}
+                    </span>
+                    <p>on</p>
+                  </section>
+                  <section>
+                    <textarea
+                      placeholder="Description"
+                      style={{ width: "100%" }}
+                      value={selectProject.description}
+                      onChange={(e) => {
+                        setSelectProject({
+                          ...selectProject,
+                          description: e.target.value,
+                        });
+                      }}
+                    />
+                  </section>
+                  <section>
+                    <Link href={selectProject.github}>
+                      <FontAwesomeIcon icon={faGithub} size="2x" />
+                    </Link>
+                    <input
+                      value={selectProject.github}
+                      placeholder="github"
+                      onChange={(e) => {
+                        setSelectProject({
+                          ...selectProject,
+                          github: e.target.value,
+                        });
+                      }}
+                    />
+                  </section>
+                  <section>
+                    <p>Language</p>
+                    <CreatableSelect
+                      isClearable
+                      isMulti
+                      defaultValue={selectProject.languages.map((item) => {
+                        return {
+                          label: item.languageName,
+                          value: item.languageName,
+                        };
+                      })}
+                      options={languageOption}
+                      onChange={(
+                        newValue: OnChangeValue<Language, true>,
+                        actionMeta: ActionMeta<Language>
+                      ) => {
+                        let temp = [];
+                        newValue.forEach((item) => {
+                          temp.push(item);
+                        });
+                        setSelectProject({ ...selectProject, languages: temp });
+                      }}
+                    />
+                  </section>
+                  <section>
+                    <p>Catagory</p>
+                    <CreatableSelect
+                      isClearable
+                      isMulti
+                      defaultValue={selectProject.categories.map((item) => {
+                        return {
+                          label: item.categoryName,
+                          value: item.categoryName,
+                        };
+                      })}
+                      options={categoryOption}
+                      onChange={(
+                        newValue: OnChangeValue<Category, true>,
+                        actionMeta: ActionMeta<Category>
+                      ) => {
+                        let temp = [];
+                        newValue.forEach((item) => {
+                          temp.push(item);
+                        });
+                        setSelectProject({
+                          ...selectProject,
+                          categories: temp,
+                        });
+                      }}
+                    />
+                  </section>
+                  <section>
+                    {isNew ? (
+                      <button onClick={() => createProject()}>Create</button>
+                    ) : (
+                      <>
+                        <button onClick={() => saveProject()}>Save</button>
+                        <button onClick={() => deleteProject()}>Delete</button>
+                      </>
+                    )}
+                    <button onClick={() => setOpenModal(false)}>Cancle</button>
+                  </section>
+                </div>
+              </div>
+            </Modal>
+          </div>
+        </section>
       </main>
     </>
   );
 };
 
-const Project = ({ projects, categories, languages }) => {
-  const [project, setProject] = useState({
-    name: "",
-    description: "",
-    image: [],
-    category: [],
-    language: [],
-    github: "",
-  });
-
-  function remapObjectToSelect(obj: any) {
-    let toselect = [];
-    for (let i = 0; i < obj.length; i++) {
-      toselect.push({
-        value: obj[i].name,
-        label: obj[i].name,
-      });
-    }
-    return toselect;
-  }
-  const [isNew, setIsNew] = useState(false);
-  async function uploadProject(){
-    const response = await fetch("http://localhost:3000/api/project", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(project),
-    });
-    const data = await response.json();
-    console.log(data);
-  }
-  async function uploadDone(event){
-    const res =  event.xhr.response;
-    const newimglink = JSON.parse(res);
-    const newimg = project.image
-    newimg.push(newimglink)
-    setProject({...project, image: newimg});
-  }
-
-  return (
-    <>
-      <section className={styles.project} id="project">
-        <div className={styles.header}>
-          <h1>Project</h1>
-          <div>
-            <button
-              style={
-                isNew
-                  ? {
-                      backgroundColor: "var(--color-primary)",
-                      color: "var(--color-background)",
-                    }
-                  : {}
-              }
-              onClick={() => setIsNew(true)}
-            >
-              New Project
-            </button>
-            <button
-              style={
-                isNew
-                  ? {}
-                  : {
-                      backgroundColor: "var(--color-primary)",
-                      color: "var(--color-background)",
-                    }
-              }
-              onClick={() => setIsNew(false)}
-            >
-              Existed Project
-            </button>
-          </div>
-        </div>
-        <div style={{ width: "100%" }}>
-          {!isNew ? (
-            <></>
-          ) : (
-            <div className={styles.form}>
-              <div className={styles.form__item}>
-                <section className={styles.text}>
-                  <div className={styles.formcol}>
-                    <label htmlFor="name">Name</label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      placeholder="Name"
-                      value={project.name}
-                      onChange={(e) => {
-                        setProject({ ...project, name: e.target.value });
-                      }}
-                    />
-                  </div>
-
-                  <div className={styles.formcol}>
-                    <label htmlFor="description">Description</label>
-                    <textarea
-                      placeholder="description"
-                      id="description"
-                      name="description"
-                      value={project.description}
-                      onChange={(e) => {
-                        setProject({ ...project, description: e.target.value });
-                      }}
-                    />
-                  </div>
-
-                  <div className={styles.formcol}>
-                    <label htmlFor="github">Github</label>
-                    <input
-                      type="text"
-                      id="github"
-                      name="github"
-                      placeholder="https://github.com/"
-                      value={project.github}
-                      onChange={(e) => {
-                        setProject({ ...project, github: e.target.value });
-                      }}
-                    />
-                  </div>
-                  <div className={styles.formcol}>
-                    <label htmlFor="category">category</label>
-                    <Select isMulti options={remapObjectToSelect(categories)} onChange={(e)=>setProject({...project,category:e.map(item=>item.value)})} />
-                  </div>
-
-                  <div className={styles.formcol}>
-                    <label htmlFor="language">language</label>
-                    <Select isMulti options={remapObjectToSelect(languages)} onChange={(e)=>setProject({...project,language:e.map(item=>item.value)})} />
-                  </div>
-                </section>
-                <section className={styles.dragdrop}>
-                  <FileUpload name="image" url="/api/image" auto onUpload={uploadDone}></FileUpload>
-                  <div className={styles.formcol}>
-                    <label htmlFor="image">Image</label>
-                    {
-                    project.image.map((item)=>(
-                      <div key={item.alt}>
-                        <img src={item.url} alt={item.alt}/>
-                        <FontAwesomeIcon icon={faXmark} onClick={()=>setProject(
-                          {...project,
-                          image:project.image.filter((e)=>e!==item)
-                          })}/>
-                      </div>
-                    ))
-                    }
-                  </div>
-                </section>
-              </div>
-              <div className={styles.form__button}>
-                <button onClick={()=>uploadProject()} >Submit</button>
-                <button
-                  onClick={() => {
-                    setProject({
-                      name: "",
-                      description: "",
-                      image: null,
-                      category: [],
-                      language: [],
-                      github: "",
-                    });
-                  }}
-                >
-                  clear
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-    </>
-  );
-};
-
-const Tag = ({ name, type }: { name: string; type: any }) => {
-  const [item, setItem] = useState(type);
-  const [toDelete, setToDelete] = useState([]);
-  const [toAdd, setToAdd] = useState([]);
-  const [newItem, setNewItem] = useState("");
-
-  async function deleteItem() {
-    toDelete.forEach(async (lang) => {
-      console.log(`http://localhost:3000/api/${name}/${lang.name}`);
-      fetch(`http://localhost:3000/api/${name}/${lang.name}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      })
-        .then((res) => res.json())
-        .then((res) => console.log(res));
-    });
-    return "done";
-  }
-
-  async function addItem() {
-    toAdd.forEach(async (lang) => {
-      fetch(`http://localhost:3000/api/${name}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: lang }),
-      })
-        .then((res) => res.json())
-        .then((res) => console.log(res));
-    });
-    return "done";
-  }
-
-  async function saveItem() {
-    addItem()
-      .then((res) => deleteItem())
-      .then((res) => alert("done"))
-      .then((res) => {
-        setToDelete([]);
-        setToAdd([]);
-      });
-  }
-
-  return (
-    <>
-      <section className={styles.tags} id={name}>
-        <span>
-          <h1>{name}</h1>
-          <button onClick={() => saveItem()}>save</button>
-        </span>
-        <div className={styles.delete}>
-          <h6>Delete : </h6>
-          {toDelete.map((lang) => (
-            <span key={lang.name}>
-              <p>{lang.name}</p>
-              <FontAwesomeIcon
-                onClick={() => {
-                  setToDelete(toDelete.filter((item) => item.id !== lang.id));
-                  setItem([...item, lang]);
-                }}
-                icon={faClose}
-              />
-            </span>
-          ))}
-        </div>
-        <div>
-          {item.map((lang) => (
-            <span key={lang.id}>
-              <h2>{lang.name}</h2>
-              <FontAwesomeIcon
-                onClick={() => {
-                  type.some((item) => {
-                    if (item.name === lang.name) {
-                      setToDelete([...toDelete, lang]);
-                    }
-                  });
-                  setItem(item.filter((item) => item.id !== lang.id));
-                }}
-                icon={faClose}
-              />
-            </span>
-          ))}
-          <span>
-            <input
-              value={newItem}
-              onChange={(e) => {
-                setNewItem(e.target.value);
-              }}
-            />
-            <FontAwesomeIcon
-              onClick={() => {
-                setToAdd([...toAdd, newItem]);
-                setItem([...item, { id: item.length + 1, name: newItem }]);
-                setNewItem("");
-              }}
-              icon={faPlus}
-            />
-          </span>
-        </div>
-      </section>
-    </>
-  );
-};
-
-export default Dashboard;
+export default Test;
