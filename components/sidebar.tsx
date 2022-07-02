@@ -31,7 +31,9 @@ const SideBar = (props: { item; name }) => {
   return (
     <section className={styles.sidebar}>
       <div className={styles.header}>
-        <Image src="/favicon.ico" alt="logo" width={60} height={60} objectFit="contain" />
+        <Link href="/">
+        <Image src="/favicon.ico" alt="logo" layout="fill" objectFit="contain" />
+        </Link>
         <h1>{props.name}</h1>
       </div>
       <div className={styles.menu}>
