@@ -23,6 +23,8 @@
     "@react-three/fiber": "^8.0.17",
     "aws-sdk": "^2.1156.0",
     "axios": "^0.27.2",
+    "embla-carousel-autoplay": "^7.0.0-rc01",
+    "embla-carousel-react": "^7.0.0-rc01",
     "express": "^4.18.1",
     "formidable": "^2.0.1",
     "fs": "^0.0.1-security",
@@ -39,7 +41,8 @@
     "react-spring": "^9.4.5",
     "react-visibility-sensor": "^5.1.1",
     "sass": "^1.51.0",
-    "scss": "^0.2.4"
+    "scss": "^0.2.4",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@types/node": "17.0.31",

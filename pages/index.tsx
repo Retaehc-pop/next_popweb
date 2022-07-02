@@ -8,10 +8,7 @@ import { Parallax, ParallaxLayer, IParallax } from "@react-spring/parallax";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAddressCard, faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faLogo } from "../components/icons";
-import {
-  Spring,
-  animated
-} from "react-spring";
+import { Spring, animated } from "react-spring";
 import VisibilitySensor from "react-visibility-sensor";
 import {
   faCode,
@@ -53,7 +50,7 @@ import {
 import Modal from "../components/modal";
 import SideBar, { SideBarProps } from "../components/sidebar";
 import { Project } from "@prisma/client";
-import { fullProject } from "../components/prisma"
+import { fullProject } from "../components/prisma";
 
 export async function getServerSideProps() {
   const project = await fetch("http://localhost:3000/api/project");
@@ -65,7 +62,7 @@ export async function getServerSideProps() {
   };
 }
 
-const Home: NextPage = ({projects}:{projects: fullProject[];}) => {
+const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
   const date = new Date();
   const parallax = useRef<IParallax>(null!);
 
@@ -131,9 +128,6 @@ const Home: NextPage = ({projects}:{projects: fullProject[];}) => {
       </div>
     );
   };
-  const [project, setProject] = useState<fullProject>();
-  console.log(projects);
-  const [openProject, setOpenProject] = useState(false);
   return (
     <>
       <Head>
@@ -145,117 +139,54 @@ const Home: NextPage = ({projects}:{projects: fullProject[];}) => {
         <section className={styles.parallax}>
           <Parallax ref={parallax} pages={5}>
             <ParallaxLayer offset={0} speed={0.1} className={styles.landing}>
-              <VisibilitySensor partialVisibility>
-                {({ isVisible }) => (
-                  <Spring delay={300} to={{ opacity: isVisible ? 1 : 0 }}>
-                    {(props) => (
-                      <animated.div style={{ ...props }}>
-                        <h1>
-                          Hi,
-                          <br />
-                          I&apos;m Pop,
-                          <br />
-                          Software developer
-                        </h1>
-                      </animated.div>
-                    )}
-                  </Spring>
-                )}
-              </VisibilitySensor>
+              <div>
+                <h1>
+                  Hi,
+                  <br />
+                  I&apos;m Pop,
+                  <br />
+                  Software developer
+                </h1>
+                <div className={styles.contact}>
+                  <Link href="mailto:papop2003@gmail.com" passHref>
+                    <div>
+                      <i>
+                        <FontAwesomeIcon icon={faEnvelope} size="2x" />
+                      </i>
+                      <p>E-mail</p>
+                    </div>
+                  </Link>
+                  <Link href="https://www.instagram.com/__pop.p/" passHref>
+                    <div>
+                      <i>
+                        <FontAwesomeIcon icon={faInstagram} size="2x" />
+                      </i>
+                      <p>Instagram</p>
+                    </div>
+                  </Link>
+                  <Link href="https://github.com/Retaehc-pop" passHref>
+                    <div>
+                      <i>
+                        <FontAwesomeIcon icon={faGithub} size="2x" />
+                      </i>
+                      <p>Github</p>
+                    </div>
+                  </Link>
+                  <Link href="https://discordapp.com/users/267572826418970624" passHref>
+                    <div>
+                      <i><FontAwesomeIcon icon={faDiscord} size="2x" /></i>
+                      <p>Discord</p>
+                    </div>
+                  </Link>
+                </div>
+              </div>
               <FontAwesomeIcon icon={faLogo} className={styles.icon} />
             </ParallaxLayer>
 
             <ParallaxLayer offset={1} speed={0.6} className={styles.about}>
-              <VisibilitySensor partialVisibility>
-                {({ isVisible }) => (
-                  <Spring
-                    delay={300}
-                    to={{
-                      transform: isVisible
-                        ? "translateX(0)"
-                        : "translateY(400px)",
-                      opacity: isVisible ? 1 : 0,
-                    }}
-                  >
-                    {(props) => (
-                      <animated.section style={{ ...props }}>
-                        <h2>Papop Lekhapanyaporn</h2>
-                        <h3>Pop</h3>
-                        <h3>
-                          {new Date().getFullYear() -
-                            new Date(
-                              "March 20, 2003 00:00:00"
-                            ).getFullYear()}{" "}
-                          Years Old
-                        </h3>
-                        <h3>From Bangkok,Thailand</h3>
-                        <p>
-                          <FontAwesomeIcon icon={faMapPin} /> Bangkok,Thailand
-                        </p>
-                        <div>
-                          <Link href="mailto:papop2003@gmail.com" passHref>
-                            <span>
-                              <FontAwesomeIcon icon={faEnvelope} size="2x" />
-                              <p>E-mail</p>
-                            </span>
-                          </Link>
-                          <Link
-                            href="https://www.instagram.com/__pop.p/"
-                            passHref
-                          >
-                            <span>
-                              <FontAwesomeIcon icon={faInstagram} size="2x" />
-                              <p>Instagram</p>
-                            </span>
-                          </Link>
-                          <Link href="https://github.com/Retaehc-pop" passHref>
-                            <span>
-                              <FontAwesomeIcon icon={faGithub} size="2x" />
-                              <p>Github</p>
-                            </span>
-                          </Link>
-                          <Link href="tel:+66898118068" passHref>
-                            <span>
-                              <FontAwesomeIcon icon={faPhone} size="2x" />
-                              <p>Phone</p>
-                            </span>
-                          </Link>
-                          <Link
-                            href="https://stackoverflow.com/users/14537225/papop-lekhapanyaporn"
-                            passHref
-                          >
-                            <span>
-                              <FontAwesomeIcon
-                                icon={faStackOverflow}
-                                size="2x"
-                              />
-                              <p>Stack overflow</p>
-                            </span>
-                          </Link>
-                          <Link
-                            href="https://www.linkedin.com/in/papop-lekhapanyaporn-2386b5229/"
-                            passHref
-                          >
-                            <span>
-                              <FontAwesomeIcon icon={faLinkedin} size="2x" />
-                              <p>Linked In</p>
-                            </span>
-                          </Link>
-                          <Link
-                            href="https://discordapp.com/users/267572826418970624"
-                            passHref
-                          >
-                            <span>
-                              <FontAwesomeIcon icon={faDiscord} size="2x" />
-                              <p>Discord</p>
-                            </span>
-                          </Link>
-                        </div>
-                      </animated.section>
-                    )}
-                  </Spring>
-                )}
-              </VisibilitySensor>
+                <section>
+                  <h2>Papop Lekhapanyaporn</h2>
+                </section>
               <VisibilitySensor partialVisibility>
                 {({ isVisible }) => (
                   <section>
@@ -283,47 +214,42 @@ const Home: NextPage = ({projects}:{projects: fullProject[];}) => {
                 <h1>Experties</h1>
               </div>
               <section>
-                {
-                hexagonalTile([{name: "none",icon: null},
-                    {name: "Python",icon: faPython},
-                    {name: "mySQL",icon: faDatabase},
-                    {name: "ubuntu",icon: faUbuntu},
-                    {name: "Coding",icon: faCode},
-                    {name: "C",icon: faC},
-                    {name: "none",icon: null},
-                    {name: "C++",icon: faCplusplus},
-                    {name: "github",icon: faGithub},])
-                }{
-                  hexagonalTile([{name: "none",icon: null},
-                      {name: "Prisma.io",icon: faPrisma},
-                      {name: "TypeScript",icon: faTypeScript},
-                      {name: "JavaScript",icon: faJs},
-                      {name: "Web Dev",icon: faWindowMaximize},
-                      {name: "Sass/Scss",icon: faSass},
-                      {name: "none",icon: null},
-                      {name: "HTML5",icon: faHtml5},
-                      {name: "CSS",icon: faCss3Alt},])
-                  }
-                  {
-                  hexagonalTile([{name: "none",icon: null},
-                      {name: "RaspberryPi",icon: faRaspberryPi},
-                      {name: "Ardino",icon: faInfinity},
-                      {name: "Solidity",icon: faEthereum},
-                      {name: "Node.Js",icon: faNodeJs},
-                      {name: "Pytorch",icon: faFire},
-                      {name: "none",icon: null},
-                      {name: "Next.js",icon: faNextJs},
-                      {name: "React",icon: faReact},])
-                  }
+                {hexagonalTile([
+                  { name: "none", icon: null },
+                  { name: "Python", icon: faPython },
+                  { name: "mySQL", icon: faDatabase },
+                  { name: "Prisma.io", icon: faPrisma },
+                  { name: "TypeScript", icon: faTypeScript },
+                  { name: "C", icon: faC },
+                  { name: "none", icon: null },
+                  { name: "C++", icon: faCplusplus },
+                  { name: "Sass/Scss", icon: faSass },
+                ])}
+                {/* {hexagonalTile([
+                  { name: "none", icon: null },
+                  { name: "JavaScript", icon: faJs },
+                  { name: "Web Dev", icon: faWindowMaximize },
+                  { name: "none", icon: null },
+                  { name: "CSS", icon: faCss3Alt },
+                ])} */}
+                {hexagonalTile([
+                  { name: "none", icon: null },
+                  { name: "RaspberryPi", icon: faRaspberryPi },
+                  { name: "Ardino", icon: faInfinity },
+                  { name: "HTML5", icon: faHtml5 },
+                  { name: "Node.Js", icon: faNodeJs },
+                  { name: "Pytorch", icon: faFire },
+                  { name: "none", icon: null },
+                  { name: "Next.js", icon: faNextJs },
+                  { name: "React", icon: faReact },
+                ])}
               </section>
             </ParallaxLayer>
 
             <ParallaxLayer offset={3} speed={0.5} className={styles.projects}>
-                <h1>Project</h1>
-                <section>
-
-                </section>
-                {/* <section className={styles.showcase}>
+              <h1>Project</h1>
+              <section></section>
+              {/* <section className={styles.showcase}>
                   {projects.map((project, index) => (
                     <div key={project.id} onClick={() => {setProject(project);setOpenProject(true);}}>
                       <Image src={
@@ -338,7 +264,7 @@ const Home: NextPage = ({projects}:{projects: fullProject[];}) => {
                     </div>
                   ))}
                 </section> */}
-                {/* <Modal onClose={() => setOpenProject(false)} open={openProject}>
+              {/* <Modal onClose={() => setOpenProject(false)} open={openProject}>
                   <div className={styles.modal}>
                     <div className={styles.img}>
                       <Image

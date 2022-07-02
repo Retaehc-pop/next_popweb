@@ -87,7 +87,32 @@
     transform: rotate(360deg);
   }
 }
+.iconholder{
 
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+  margin: 1rem;
+  
+  p{
+    position: absolute;
+    opacity: 0;
+    transition: all ease-in-out 0.5s;
+  }
+  i{
+    transition: all ease-in-out 0.5s;
+  }
+  &:hover,&:active{
+    p{
+      opacity: 1;
+    }
+    i{
+      transform: rotate(360deg) scale(0);
+      opacity: 0;
+    }
+  }
+}
 .sidebar{
   position: fixed;
   display: flex;

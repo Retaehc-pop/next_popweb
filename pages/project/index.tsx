@@ -9,6 +9,10 @@ import { fullProject } from "../../components/prisma";
 import { fa0,faProjectDiagram,faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../../components/modal";
+import { faGit, faGithub } from "@fortawesome/free-brands-svg-icons";
+import { faTypeScript } from "../../components/icons";
+import ToIcon from "../../components/toIcon";
+import Carousel from "../../components/carousel";
 const sidebarItem:SideBarProps[] = [
   {
     name:"test",
@@ -22,6 +26,7 @@ const sidebarItem:SideBarProps[] = [
     onClick:()=>{}
   }
 ]
+
 const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectedProject, setSelectedProject] = useState<fullProject>({
@@ -38,7 +43,7 @@ const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
       id:"1",
       url:"",
       alt:"",
-      projectId:"0"
+      projectId:0
     }],
   });
 
@@ -84,16 +89,27 @@ const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
         <Modal open={openModal} onClose={()=>setOpenModal(false)}>
           <section className={styles.modal}>
             <section className={styles.images}>
-              <Image src={selectedProject.images[0].url} alt={selectedProject.images[0].alt} layout='fill' objectFit='contain'/>
+              <Carousel slides={selectedProject.images} />
+              {/* <Image src={selectedProject.images[0].url} alt={selectedProject.images[0].alt} layout='fill' objectFit='cover'/> */}
             </section>
             <section className={styles.infos}>
               <h1>{selectedProject.name}</h1>
-              <h1>{selectedProject.name}</h1>
-              <h1>{selectedProject.name}</h1>
-              <h1>{selectedProject.name}</h1>
-              <h1>{selectedProject.name}</h1>
-              <h1>{selectedProject.name}</h1>
-              <h1>{selectedProject.name}</h1>
+              <p>{selectedProject.description}</p>
+              <h3>Language:</h3>
+              <div className={styles.icons}>
+                {selectedProject.languages.map(language=>(
+                  <ToIcon icon={language.languageName}/>
+                ))}
+              </div>
+              <div className={styles.categories}>
+                <p>tag:</p>
+                {selectedProject.categories.map(category=>(
+                    <h5>{category.categoryName}</h5>
+                ))}
+              </div>
+              <Link href={selectedProject.github}>
+                <FontAwesomeIcon icon={faGithub} size="3x"/>
+              </Link>
             </section>
           </section>
         </Modal>
