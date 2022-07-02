@@ -18,26 +18,18 @@ import {
   faC,
   faInfinity,
   faDatabase,
-  faWindowMaximize,
   faFire,
-  faPhone,
-  faMapPin,
+  faArrowRight,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faPython,
   faRaspberryPi,
-  faJs,
   faSass,
-  faCss3Alt,
   faReact,
   faHtml5,
   faGithub,
-  faEthereum,
-  faUbuntu,
   faNodeJs,
-  faStackOverflow,
   faInstagram,
-  faLinkedin,
   faDiscord,
   IconDefinition,
 } from "@fortawesome/free-brands-svg-icons";
@@ -47,13 +39,17 @@ import {
   faNextJs,
   faPrisma,
 } from "../components/icons/";
-import Modal from "../components/modal";
 import SideBar, { SideBarProps } from "../components/sidebar";
-import { Project } from "@prisma/client";
 import { fullProject } from "../components/prisma";
 
 export async function getServerSideProps() {
-  const project = await fetch("http://localhost:3000/api/project");
+  const project = await fetch("http://localhost:3000/api/project",{
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body:JSON.stringify({showcase:true}),
+  });
   const projectData = await project.json();
   return {
     props: {
@@ -225,13 +221,6 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
                   { name: "C++", icon: faCplusplus },
                   { name: "Sass/Scss", icon: faSass },
                 ])}
-                {/* {hexagonalTile([
-                  { name: "none", icon: null },
-                  { name: "JavaScript", icon: faJs },
-                  { name: "Web Dev", icon: faWindowMaximize },
-                  { name: "none", icon: null },
-                  { name: "CSS", icon: faCss3Alt },
-                ])} */}
                 {hexagonalTile([
                   { name: "none", icon: null },
                   { name: "RaspberryPi", icon: faRaspberryPi },
@@ -248,46 +237,11 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
 
             <ParallaxLayer offset={3} speed={0.5} className={styles.projects}>
               <h1>Project</h1>
-              <section></section>
-              {/* <section className={styles.showcase}>
-                  {projects.map((project, index) => (
-                    <div key={project.id} onClick={() => {setProject(project);setOpenProject(true);}}>
-                      <Image src={
-                          project.images ?
-                            project.images[0].url
-                            : "/static/AssumptionCollege.jpg"
-                        }
-                        width="100%"
-                        height="100%"
-                        alt={project.name}
-                      />
-                    </div>
-                  ))}
-                </section> */}
-              {/* <Modal onClose={() => setOpenProject(false)} open={openProject}>
-                  <div className={styles.modal}>
-                    <div className={styles.img}>
-                      <Image
-                        src={project.images[0].url}
-                        className={styles.image}
-                        objectFit="contain"
-                        width="100%"
-                        height="100%"
-                        alt={project.name}
-                      />
-                      <i style={{ left: "5%" }}>
-                        <FontAwesomeIcon icon={faCircleChevronLeft} />
-                      </i>
-                      <i style={{ right: "45%" }}>
-                        <FontAwesomeIcon icon={faCircleChevronRight} />
-                      </i>
-                    </div>
-                    <div className={styles.description}>
-                      <h1>{project.name}</h1>
-                      <p>{project.description}</p>
-                    </div>
-                  </div>
-                </Modal> */}
+              <section>
+                <Link href="/project">
+                  <h4>Explore Project<FontAwesomeIcon icon={faArrowRight}/></h4>
+                </Link>
+              </section>
             </ParallaxLayer>
 
             <ParallaxLayer offset={4} speed={0.5} className={styles.experience}>
@@ -295,11 +249,6 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
                 <h1>Experience</h1>
               </section>
               <section>
-                <div>
-                  <span>a</span>
-                  <span>a</span>
-                  <span>a</span>
-                </div>
               </section>
             </ParallaxLayer>
           </Parallax>
