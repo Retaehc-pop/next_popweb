@@ -60,10 +60,10 @@ model VerificationToken {
 model Experience {
   id           Int      @id @default(autoincrement())
   title        String
-  organisation String
-  startDate    DateTime
-  endDate      DateTime
-  current      Boolean
+  organisation String?
+  startDate    DateTime?
+  endDate      DateTime?
+  complete     Boolean @default(false)
   description  String
   project      Project  @relation(fields: [projectId], references: [id])
   projectId    Int      @unique
