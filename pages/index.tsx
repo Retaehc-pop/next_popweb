@@ -43,13 +43,7 @@ import SideBar, { SideBarProps } from "../components/sidebar";
 import { fullProject } from "../components/prisma";
 
 export async function getServerSideProps() {
-  const project = await fetch("http://localhost:3000/api/project",{
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body:JSON.stringify({showcase:true}),
-  });
+  const project = await fetch("http://localhost:3000/api/project/showcase");
   const projectData = await project.json();
   return {
     props: {
@@ -237,11 +231,36 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
 
             <ParallaxLayer offset={3} speed={0.5} className={styles.projects}>
               <h1>Project</h1>
+              <h3>My best project</h3>
               <section>
-                <Link href="/project">
-                  <h4>Explore Project<FontAwesomeIcon icon={faArrowRight}/></h4>
-                </Link>
+                {
+                  projects.map((project) => (
+                    <div key={project.name}>
+                      <Image src={project.images[0].url} alt={project.name} className={styles.image} layout="fill" objectFit="cover"/>
+                      <h3>{project.name}</h3>
+                    </div>
+                  ))
+                }
+                {
+                  projects.map((project) => (
+                    <div key={project.name}>
+                      <Image src={project.images[0].url} alt={project.name} className={styles.image} layout="fill" objectFit="cover"/>
+                      <h3>{project.name}</h3>
+                    </div>
+                  ))
+                }
+                {
+                  projects.map((project) => (
+                    <div key={project.name}>
+                      <Image src={project.images[0].url} alt={project.name} className={styles.image} layout="fill" objectFit="cover"/>
+                      <h3>{project.name}</h3>
+                    </div>
+                  ))
+                }
               </section>
+              <Link href="/project" passHref >
+                <h3 className={styles.link}>More Project<FontAwesomeIcon icon={faArrowRight}/></h3>
+              </Link>
             </ParallaxLayer>
 
             <ParallaxLayer offset={4} speed={0.5} className={styles.experience}>
