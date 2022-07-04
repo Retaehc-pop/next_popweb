@@ -38,8 +38,16 @@ export default async function handle(req:NextApiRequest,res:NextApiResponse){
 async function handleGet(req:NextApiRequest,res:NextApiResponse){
   const result:Project[] = await prisma.project.findMany({
     include:{
-      categories: true,
-      languages: true,
+      categories: {
+        select: {
+          category: true
+        }
+      },
+      languages: {
+        select: {
+          language: true
+        }
+      },
       images: true,
     }
   });
@@ -54,58 +62,49 @@ async function handlePost(req:NextApiRequest,res:NextApiResponse){
         name: data.name,
         description: data.description,
         github: data.github,
-        published: data.published, 
-        }
-    });
-    data.categories.forEach(async (category) => {
-      await prisma.categoriesOnProject.create({
-        data: {
-          project: {
-            connect: {
-              id: result.id
-            }
+        published: data.published,
+        started: data.started,
+        ended: data.ended,
+        showcase:data.showcase, 
+        categories: {
+          create: data.categories.map(category => ({
+              category: {
+                connect: {
+                  id: category.id
+                }
+              }}))
           },
-          category: {
-            connect: {
-              name: category
-            }
+        languages: {
+          create: data.languages.map(language => ({
+              language: {
+                connect: {
+                  id: language.id
+                }
+              }}))
+        },
+        images: {
+          create: data.images.map(image=>({
+            url: image.url,
+            alt: image.alt
+          }))
+        }
+      },
+      include:{
+        categories: {
+          select: {
+            category: true
           }
-        }
-      });
-    }
-    );
-    data.languages.forEach(async (language) => {
-      await prisma.languageOnProject.create({
-        data: {
-          project: {
-            connect: {
-              id: result.id
-            }
-          },
-          language: {
-            connect: {
-              name: language
-            }
+        },
+        languages: {
+          select: {
+            language: true
           }
-        }
-      });
-    }
-    );
-    data.images.forEach(async (img) => {
-      await prisma.image.create({
-        data: {
-          project: {
-            connect: {
-              id: result.id
-            }
-          },
-          url: img.url,
-          alt: img.alt
-        }
-      });
+        },
+        images: true
       }
-    );
-    return res.status(200).json(data);
+    });
+
+    return res.status(201).json(result);
   }
   catch(err){
     return res.status(400).json({

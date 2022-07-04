@@ -31,8 +31,16 @@ async function handleGet(req:NextApiRequest,res:NextApiResponse){
       showcase:true,
     },
     include:{
-      categories: true,
-      languages: true,
+      categories: {
+        select: {
+          category: true
+        }
+      },
+      languages: {
+        select: {
+          language: true
+        }
+      },
       images: true,
     }
   });
