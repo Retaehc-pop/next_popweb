@@ -1,22 +1,30 @@
-import { PrismaClient,Prisma } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
-let prisma: PrismaClient
+let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient()
+  prisma = new PrismaClient();
 } else {
   if (!global.prisma) {
-    global.prisma = new PrismaClient()
+    global.prisma = new PrismaClient();
   }
-  prisma = global.prisma
+  prisma = global.prisma;
 }
 
 export type fullProject = Prisma.ProjectGetPayload<{
   include: {
-    categories: true;
-    languages: true;
+    categories: {
+      select: {
+        category: true;
+      };
+    };
+    languages: {
+      select: {
+        language: true;
+      };
+    };
     images: true;
-  }
-}>
+  };
+}>;
 
 export default prisma;
