@@ -215,11 +215,13 @@ const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject
         projects.filter((item) => item.name !== selectProject.name);
         setToCreate({...toCreate,images: []})
         setIsNew(false);
+        setOpenModal(false)
         alert(`Project ${selectProject.name} is deleted`);
       } else {
         alert("Something went wrong");
       }
-    } else {
+    } 
+    else {
       return;
     }
   }
