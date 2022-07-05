@@ -5,6 +5,6 @@ const nextConfig = {
 
 module.exports = {
   images: {
-    domains: ['fra1.digitaloceanspaces.com'],
+    domains: ['fra1.digitaloceanspaces.com','retaehcpop.s3.amazonaws.com'],
   },
   nextConfig}
