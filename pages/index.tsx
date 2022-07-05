@@ -241,22 +241,6 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
                     </div>
                   ))
                 }
-                {
-                  projects.map((project) => (
-                    <div key={project.name}>
-                      <Image src={project.images[0].url} alt={project.name} className={styles.image} layout="fill" objectFit="cover"/>
-                      <h3>{project.name}</h3>
-                    </div>
-                  ))
-                }
-                {
-                  projects.map((project) => (
-                    <div key={project.name}>
-                      <Image src={project.images[0].url} alt={project.name} className={styles.image} layout="fill" objectFit="cover"/>
-                      <h3>{project.name}</h3>
-                    </div>
-                  ))
-                }
               </section>
               <Link href="/project" passHref >
                 <h3 className={styles.link}>More Project<FontAwesomeIcon icon={faArrowRight}/></h3>

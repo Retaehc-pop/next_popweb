@@ -24,15 +24,15 @@ export default async function handle(req:NextApiRequest,res:NextApiResponse){
             })
             });
         break;
-      // case "PUT":
-      //   handlePut(req,res).then(() => {
-      //     resolve(res);
-      //   }).catch(err => {
-      //     return res.status(400).json({
-      //       error: err.message
-      //       })
-      //       });
-      //   break;
+      case "PUT":
+        handlePut(req,res).then(() => {
+          resolve(res);
+        }).catch(err => {
+          return res.status(400).json({
+            error: err.message
+            })
+            });
+        break;
       default:
         res.status(400).json({
           error:"Method not allowed"
@@ -66,33 +66,85 @@ async function handleGet(req:NextApiRequest,res:NextApiResponse){
   return res.status(200).json(result);
 }
 
-// async function handlePut(req:NextApiRequest,res:NextApiResponse){
-//   const name = `${req.query.name}`;
-//   const data = req.body;
+async function handlePut(req:NextApiRequest,res:NextApiResponse){
+  const name = `${req.query.name}`;
+  const data = req.body;
   
-//   const result = await prisma.project.update({
-//     where:{
-//       name:name
-//     },
-//     data:{
-//       name:data.name,
-//       description:data.description,
-//       github:data.github,
-//       published:data.published,
-//       started: data.started,
-//       ended: data.ended,
-//       showcase:data.showcase,
-//       // categories:{
-//       //   upsert: data.categories.map(category => ({
-//       //     category: category.category,
-//       //     createdAt: new Date(),
-//       //     updatedAt: new Date()
-//       //   }))
-//       // }
-//     }
-//   });
-//   return res.status(200).json(result);
-// }
+  const result = await prisma.project.update({
+    where:{
+      name:name
+    },
+    data:{
+      name:data.name,
+      description:data.description,
+      github:data.github,
+      published:data.published,
+      started: data.started,
+      ended: data.ended,
+      showcase:data.showcase,
+      categories:{
+        upsert: data.categories.map(category => ({
+          where:{
+            projectId_categoryName:{
+              projectId: data.id,
+              categoryName:category.category.name
+            }
+          },
+          update:{
+            category:{
+              connect:{
+                id:category.category.id
+              }
+            }
+          },
+          create:{
+            category:{
+              connect:{
+                id:category.category.id
+              }
+            }
+          }
+        }))
+      },
+      languages:{
+        upsert: data.languages.map(language => ({
+          where:{
+            projectId_languageName:{
+              projectId:data.id,
+              languageName:language.language.name
+            }
+          },
+          update:{
+            language:{
+              connect:{
+                id:language.language.id
+              }
+            }
+          },
+          create:{
+            language:{
+              connect:{
+                id:language.language.id
+              }
+            }
+          }
+        }))
+      },
+      images:{
+        connectOrCreate: data.images.map(image => ({
+          where:{
+            url:image.url
+          },
+          create:{
+            url:image.url,
+            alt:image.alt
+          }
+        }))
+      }
+    }
+  });
+  return res.status(200).json(result);
+}
 
 async function handleDelete(req:NextApiRequest,res:NextApiResponse){
   const name = `${req.query.name}`;

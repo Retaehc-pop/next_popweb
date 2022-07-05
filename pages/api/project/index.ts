@@ -70,7 +70,7 @@ async function handlePost(req:NextApiRequest,res:NextApiResponse){
           create: data.categories.map(category => ({
               category: {
                 connect: {
-                  id: category.id
+                  id: category.category.id
                 }
               }}))
           },
@@ -78,12 +78,12 @@ async function handlePost(req:NextApiRequest,res:NextApiResponse){
           create: data.languages.map(language => ({
               language: {
                 connect: {
-                  id: language.id
+                  id: language.language.id
                 }
               }}))
         },
         images: {
-          create: data.images.map(image=>({
+          connectOrCreate: data.images.map(image=>({
             url: image.url,
             alt: image.alt
           }))

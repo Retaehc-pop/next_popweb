@@ -61,13 +61,14 @@ async function handlePost(req: NextApiRequest, res: NextApiResponse) {
           Body: fs.createReadStream(files.image.filepath),
           ACL: "public-read",
         },
-        async () =>
-          res
-            .status(201)
-            .json({
-              alt: files.image.originalFilename,
+        async () => {
+          const image = await prisma.image.create({
+            data: {
               url: `${process.env.NEXT_PUBLIC_ENDPOINT}/${process.env.NEXT_PUBLIC_BUCKET}/${files.image.originalFilename}`,
-            })
+              alt: files.image.originalFilename,
+            }});
+          return res.status(201).json(image)
+        }
       );
     } catch (err) {
       return res.status(500).json({

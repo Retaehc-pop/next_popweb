@@ -4,7 +4,7 @@ import Image from "next/image";
 import SideBar, { SideBarProps } from "../components/sidebar";
 import styles from "../styles/Dashboard.module.scss";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faGroupArrowsRotate,
@@ -26,6 +26,7 @@ import { faGit, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FileUploader } from "react-drag-drop-files";
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
+import { fullProject } from "../components/prisma";
 
 const sideBarItem: SideBarProps[] = [
   {
@@ -68,41 +69,34 @@ export async function getServerSideProps() {
   };
 }
 
-function remapObjectToSelect(obj: any) {
-  let toselect = [];
-  for (let i = 0; i < obj.length; i++) {
-    toselect.push({
-      value: obj[i].name,
-      label: obj[i].name,
-    });
-  }
-  return toselect;
-}
-
-const Test: NextPage = ({
-  projects,
-  languages,
-  categories,
-}: {
-  projects: any[];
-  languages: Language[];
-  categories: Category[];
-}) => {
+const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject[];languages: Language[];categories: Category[];}) => {
   const [openModal, setOpenModal] = useState(false);
-  const [selectProject, setSelectProject] = useState({
+  const [selectProject, setSelectProject] = useState<fullProject>({
     id: 1,
     name: "Product 1",
     published: false,
     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
     images: [],
+    started: new Date(),
+    ended: new Date(),
+    showcase: false,
     github: "github test link",
     languages: [],
     categories: [],
+    createdAt: new Date(),
+    updatedAt: new Date(),
   });
   const [isNew, setIsNew] = useState(false);
-  const languageOption = remapObjectToSelect(languages);
-  const categoryOption = remapObjectToSelect(categories);
-  const [imageHolder, setImageHolder] = useState([]);
+  const [toCreate,setToCreate] = useState({
+    images:[],
+    languages:[],
+    categories:[]
+  });
+
+  useEffect(() => {
+    console.log(selectProject);
+    console.log(toCreate)
+  }, [selectProject]);
 
   async function uploadImage(image: File) {
     var formData = new FormData();
@@ -111,11 +105,17 @@ const Test: NextPage = ({
       method: "POST",
       body: formData,
     });
+    if (result.status === 201) {
+      alert("Image uploaded");
+    }
+    else{
+      alert("Image not uploaded");
+    }
     const data = await result.json();
     return data;
   }
 
-  async function createTag(item, tag) {
+  async function createTag(item, tag:string) {
     const res = await fetch(`http://localhost:3000/api/${tag}`, {
       method: "POST",
       headers: {
@@ -123,109 +123,83 @@ const Test: NextPage = ({
       },
       body: JSON.stringify({ name: item }),
     });
-    if (res.status === 200){
-      const data = await res.json();
-      if (tag==="categories"){
-        categories.push({id:data.id, name: item});
-      }
-      else if (tag==="languages"){
-        languages.push({id:data.id, name: item});
-      }
-    }
-    else{
+    if (res.status === 200) {
+      alert(`Created ${item}`)
+    } else {
       alert("something went wrong");
     }
     return res.json();
   }
 
   async function createProject() {
-    selectProject.languages.forEach((item) => {
-      if (item.hasOwnProperty("__isNew__")) {
-        createTag(item.value, "language").then((res) => console.log(res));
-      }
-    });
-    selectProject.categories.forEach((item) => {
-      if (item.hasOwnProperty("__isNew__")) {
-        createTag(item.value, "category").then((res) => console.log(res));
-      }
-    });
-
+    console.log(toCreate);
+    console.log(selectProject)
     new Promise((resolve, reject) => {
-      imageHolder.forEach(async (item, index) => {
+      toCreate.images.forEach(async (item, index) => {
         selectProject.images.push(await uploadImage(item));
-        if (selectProject.images.length === imageHolder.length) resolve(1);
+        if (index === toCreate.images.length-1) resolve(1);
       });
-    })
-      .then((res) => {
-        return {
-          ...selectProject,
-          languages: [...selectProject.languages.map((item) => item.value)],
-          categories: [...selectProject.categories.map((item) => item.value)],
-        };
-      })
-      .then((newProject) => {
-        fetch("http://localhost:3000/api/project", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(newProject),
-        }).then((res) => {
-          if (res.status === 200) {
-            setOpenModal(false);
-            setImageHolder([]);
-            setIsNew(false);
-            projects.push(selectProject);
-            alert("Project created");
-          } else {
-            alert("Error creating project");
-          }
-        });
-      });
-  }
-
-  async function saveProject() {
-    selectProject.languages.forEach((item) => {
-      if (item.hasOwnProperty("__isNew__")) {
-        createTag(item.value, "language").then((res) => console.log(res));
-      }
-    });
-    selectProject.categories.forEach((item) => {
-      if (item.hasOwnProperty("__isNew__")) {
-        createTag(item.value, "category").then((res) => console.log(res));
-      }
-    });
-
-    new Promise((resolve, reject) => {
-      imageHolder.forEach(async (item, index) => {
-        selectProject.images.push(await uploadImage(item));
-        if (selectProject.images.length === imageHolder.length) resolve(1);
-      });
-    }).then((res) => {
+    }).then(res=>{
       return {
-          ...selectProject,
-          languages: [...selectProject.languages.map((item) => item.value)],
-          categories: [...selectProject.categories.map((item) => item.value)],
-      };
-    }).then((newProject) => {
-      fetch(`http://localhost:3000/api/project/${selectProject.id}`, {
-        method: "PUT",
+        ...selectProject,
+        started:selectProject.started.toISOString(),
+        ended: selectProject.ended.toISOString(),
+      }
+    }).then(res=>{
+      return fetch("http://localhost:3000/api/project", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newProject),
-      }).then((res) => {
-        if (res.status === 200) {
-          setOpenModal(false);
-          setImageHolder([]);
-          setIsNew(false);
-          alert("Project saved");
-        } else {
-          alert("Error saving project");
-        }
+        body: JSON.stringify(res),
       });
-    }
-    );
+    }).then(res=>{
+      if (res.status === 201){
+        setOpenModal(false);
+        setToCreate({...toCreate,images: []})
+        setIsNew(false);
+        projects.push(selectProject);
+        alert("Created Project")
+      }
+      else{
+        alert("something went wrong")
+      }
+    })
+  }
+
+  async function saveProject() {
+    console.log(1)
+    new Promise((resolve, reject) => {
+      if (toCreate.images.length>0){
+        toCreate.images.forEach(async (item, index) => {
+          selectProject.images.push(await uploadImage(item));
+          if (index === toCreate.images.length-1) resolve(1);
+        });
+      }
+      else{
+        resolve(1);
+      }
+    }).then(res=>{
+      console.log(2)
+      return {
+        ...selectProject,
+        started: selectProject.started? selectProject.started.toISOString():null,
+        ended: selectProject.ended? selectProject.ended.toISOString():null,
+      }
+    })
+    .then(res=>{
+      console.log(3)
+      return fetch(`http://localhost:3000/api/project/${selectProject.name}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          },
+          body: JSON.stringify(res),
+        }
+      )
+    }).then(res=>res.json()).then(res=>{
+      console.log(res)
+    })
   }
 
   async function deleteProject() {
@@ -239,7 +213,7 @@ const Test: NextPage = ({
 
       if (res.status === 200) {
         projects.filter((item) => item.name !== selectProject.name);
-        setImageHolder([]);
+        setToCreate({...toCreate,images: []})
         setIsNew(false);
         alert(`Project ${selectProject.name} is deleted`);
       } else {
@@ -269,9 +243,15 @@ const Test: NextPage = ({
                   description: "",
                   images: [],
                   github: "",
+                  started: new Date(),
+                  ended: new Date(),
+                  showcase: false,
                   languages: [],
                   categories: [],
+                  createdAt: new Date(),
+                  updatedAt: new Date(),
                 });
+                setToCreate({images: [],languages:[],categories:[]});
                 setIsNew(true);
               }}
             >
@@ -286,7 +266,7 @@ const Test: NextPage = ({
                 onClick={() => {
                   setSelectProject(item);
                   setOpenModal(true);
-                  setImageHolder([]);
+                  setToCreate({images: [],languages:[],categories:[]});
                   setIsNew(false);
                 }}
               >
@@ -298,40 +278,30 @@ const Test: NextPage = ({
                 <p>{item.name}</p>
               </div>
             ))}
-            <Modal
-              onClose={() => {
-                setOpenModal(false);
-              }}
-              open={openModal}
-            >
+            <Modal onClose={()=>setOpenModal(false)}open={openModal}>
               <div className={styles.modal}>
                 <div className={styles.img}>
                   <section className={styles.image}>
                     {selectProject.images.map((item) => (
-                      <img src={item.url} alt={item.alt} />
+                      <div key={item.url}>
+                        <Image src={item.url} alt={item.alt} layout="fill" objectFit="cover"/>
+                      </div>
                     ))}
                   </section>
                   <section className={styles.upload}>
-                    {imageHolder.map((item, index) => (
+                    {toCreate.images.map((item, index) => (
                       <span key={index}>
-                        <img src={URL.createObjectURL(item)} />
+                        <div>
+                          <Image src={URL.createObjectURL(item)} alt={item} layout="fill" objectFit="cover"/>
+                        </div>
                         <p>{item.name}</p>
                         <FontAwesomeIcon
                           icon={faXmark}
-                          onClick={() =>
-                            setImageHolder(
-                              imageHolder.filter((img) => img !== item)
-                            )
-                          }
+                          onClick={() => setToCreate({...toCreate,images: toCreate.images.filter((img) => img !== item)})                          }
                         />
                       </span>
                     ))}
-                    <FileUploader
-                      handleChange={(e) => {
-                        setImageHolder([...e]);
-                      }}
-                      multiple
-                    />
+                    <FileUploader handleChange={(e) => {setToCreate({...toCreate,images: [...e]})}} multiple/>
                   </section>
                 </div>
                 <div className={styles.info}>
@@ -384,6 +354,67 @@ const Test: NextPage = ({
                     />
                   </section>
                   <section>
+                    <div>
+                      <p>started</p>
+                      <input
+                        type="date"
+                        value={
+                          selectProject.started
+                            ? new Date(selectProject.started).toISOString().split("T")[0]
+                            : ""
+                        }
+                        onChange={(e) =>
+                          // console.log(new Date(e.target.valueAsDate))
+                          setSelectProject({
+                            ...selectProject,
+                            started: new Date(e.target.valueAsDate)
+                          })
+                        }
+                      />
+                    </div>
+                    <div>
+                      <p>ended</p>
+                      <input
+                        type="date"
+                        value={
+                          selectProject.ended
+                            ? new Date(selectProject.ended).toISOString().split("T")[0]
+                            : ""
+                        }
+                        onChange={(e) =>
+                          setSelectProject({
+                            ...selectProject,
+                            ended: new Date(e.target.valueAsDate),
+                          })
+                        }
+                      />
+                    </div>
+                  </section>
+                  <section>
+                    <p>Showcase?</p>
+                    <span
+                      className={styles.showcase}
+                      onClick={() => {
+                        setSelectProject({
+                          ...selectProject,
+                          showcase: !selectProject.showcase,
+                        });
+                      }}
+                    >
+                      {selectProject.showcase ? (
+                        <FontAwesomeIcon
+                          icon={faToggleOn}
+                          size="2x"
+                        ></FontAwesomeIcon>
+                      ) : (
+                        <FontAwesomeIcon
+                          icon={faToggleOff}
+                          size="2x"
+                        ></FontAwesomeIcon>
+                      )}
+                    </span>
+                  </section>
+                  <section>
                     <Link href={selectProject.github}>
                       <FontAwesomeIcon icon={faGithub} size="2x" />
                     </Link>
@@ -403,23 +434,23 @@ const Test: NextPage = ({
                     <CreatableSelect
                       isClearable
                       isMulti
-                      defaultValue={selectProject.languages.map((item) => {
-                        return {
-                          label: item.languageName,
-                          value: item.languageName,
-                        };
-                      })}
-                      options={languageOption}
-                      onChange={(
-                        newValue: OnChangeValue<Language, true>,
-                        actionMeta: ActionMeta<Language>
-                      ) => {
-                        let temp = [];
-                        newValue.forEach((item) => {
-                          temp.push(item);
-                        });
-                        setSelectProject({ ...selectProject, languages: temp });
+                      defaultValue={selectProject.languages.map((item) => ({id:item.language.id,name:item.language.name,experties:item.language.experties}))}
+                      options={languages}
+                      getNewOptionData={(inputValue: string,optionLabel: ReactNode)=>{
+                        return {id:0,name:inputValue,experties:0}
                       }}
+                      onChange={async (newValue: OnChangeValue<Language, true>,actionMeta: ActionMeta<Language>) => {
+                        if (actionMeta.action === "create-option"){
+                          var newlang = await createTag(actionMeta.option.name,"language")
+                          setSelectProject({...selectProject,languages: [...selectProject.languages,{language:newlang}]})
+                        }
+                        else{
+                          setSelectProject({...selectProject,languages: newValue.map(item=>({language:item}))})
+                        }
+
+                      }}
+                      getOptionLabel={(option) => option.name}
+                      getOptionValue={(option) => option.name}
                     />
                   </section>
                   <section>
@@ -427,26 +458,22 @@ const Test: NextPage = ({
                     <CreatableSelect
                       isClearable
                       isMulti
-                      defaultValue={selectProject.categories.map((item) => {
-                        return {
-                          label: item.categoryName,
-                          value: item.categoryName,
-                        };
-                      })}
-                      options={categoryOption}
-                      onChange={(
-                        newValue: OnChangeValue<Category, true>,
-                        actionMeta: ActionMeta<Category>
-                      ) => {
-                        let temp = [];
-                        newValue.forEach((item) => {
-                          temp.push(item);
-                        });
-                        setSelectProject({
-                          ...selectProject,
-                          categories: temp,
-                        });
+                      defaultValue={selectProject.categories.map((item) => ({id:item.category.id,name:item.category.name}))}
+                      options={categories}
+                      getNewOptionData={(inputValue: string,optionLabel: ReactNode)=>{
+                        return {id:0,name:inputValue}
                       }}
+                      onChange={async(newValue: OnChangeValue<Category, true>,actionMeta: ActionMeta<Category>) => {
+                        if (actionMeta.action === "create-option"){
+                          var newcat = await createTag(actionMeta.option.name,"category")
+                          setSelectProject({...selectProject,categories: [...selectProject.categories,{category:newcat}]})
+                        }
+                        else{
+                          setSelectProject({...selectProject,categories: newValue.map(item=>({category:item}))})
+                        }
+                      }}
+                      getOptionLabel={(option) => option.name}
+                      getOptionValue={(option) => option.name}
                     />
                   </section>
                   <section>

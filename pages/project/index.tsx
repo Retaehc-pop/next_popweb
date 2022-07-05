@@ -35,6 +35,9 @@ const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
     github:"",
     published:false,
     description: "",
+    started: new Date(),
+    ended: new Date(),
+    showcase: false,
     createdAt: new Date(),
     updatedAt: new Date(),
     categories:[],
@@ -90,12 +93,15 @@ const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
           <section className={styles.modal}>
             <section className={styles.images}>
               <Carousel slides={selectedProject.images} />
-              {/* <Image src={selectedProject.images[0].url} alt={selectedProject.images[0].alt} layout='fill' objectFit='cover'/> */}
             </section>
             <section className={styles.infos}>
               <h1>{selectedProject.name}</h1>
+              {
+                selectedProject.started && selectedProject.ended ?
+                <p>{selectedProject.started.getFullYear()}-{selectedProject.ended.getFullYear()}</p>:
+                <p></p>
+              }
               <p>{selectedProject.description}</p>
-              <h3>Language:</h3>
               <div className={styles.icons}>
                 {selectedProject.languages.map(language=>(
                   <ToIcon icon={language.languageName}/>
