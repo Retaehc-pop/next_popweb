@@ -27,4 +27,22 @@ export type fullProject = Prisma.ProjectGetPayload<{
   };
 }>;
 
+
+export type fullLanguage = Prisma.LanguageGetPayload<{
+  include: {
+    project: {
+      include: {
+        project: {
+          include:{
+            languages: true,
+            categories: true,
+            images: true
+          }
+        };
+      };
+    };
+  };
+}>;
+
+
 export default prisma;

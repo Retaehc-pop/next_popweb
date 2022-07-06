@@ -37,13 +37,12 @@ export default async function handle(req:NextApiRequest,res:NextApiResponse){
 
 async function handleGet(req:NextApiRequest,res:NextApiResponse){
   const option = req.query;
-  const name = option.name? {name:true}:null;
   const published = option.published==="true"? {published:true}:null;
   const showcase = option.showcase? {showcase:true}:null;
   const result:Project[] = await prisma.project.findMany({
     where:{
       ...published,
-      ...showcase,
+      ...showcase
     },
     include:{
       categories: {

@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import styles from "../../styles/Project.module.scss";
+import styles from "../../styles/Projects.module.scss";
 import Sidebar,{SideBarProps} from "../../components/sidebar";
 import { fullProject } from "../../components/prisma";
 import { fa0,faProjectDiagram,faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -95,22 +95,24 @@ const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
               <Carousel slides={selectedProject.images} />
             </section>
             <section className={styles.infos}>
-              <h1>{selectedProject.name}</h1>
+              <Link href={`/project/${selectedProject.name}`} passHref>
+                <h1>{selectedProject.name}</h1>
+              </Link>
               {
                 selectedProject.started && selectedProject.ended ?
-                <p>{selectedProject.started.getFullYear()}-{selectedProject.ended.getFullYear()}</p>:
+                <p>{new Date(selectedProject.started).getMonth()}/{new Date(selectedProject.started).getFullYear()}-{new Date(selectedProject.ended).getMonth()}/{new Date(selectedProject.ended).getFullYear()}</p>:
                 <p></p>
               }
               <p>{selectedProject.description}</p>
               <div className={styles.icons}>
                 {selectedProject.languages.map(language=>(
-                  <ToIcon icon={language.languageName}/>
+                  <ToIcon icon={language.language.name}/>
                 ))}
               </div>
               <div className={styles.categories}>
                 <p>tag:</p>
                 {selectedProject.categories.map(category=>(
-                    <h5>{category.categoryName}</h5>
+                    <h5>{category.category.name}</h5>
                 ))}
               </div>
               <Link href={selectedProject.github}>
@@ -126,7 +128,7 @@ const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
 };
 
 export async function getServerSideProps() {
-  const project = await fetch("http://localhost:3000/api/project");
+  const project = await fetch("http://localhost:3000/api/project?published=true");
   const projectData = await project.json();
   return {
     props: {

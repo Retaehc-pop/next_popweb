@@ -52,16 +52,39 @@ export default async function handle(
 
 async function handleGet(req: NextApiRequest, res: NextApiResponse) {
   const name = `${req.query.name}`;
-  const result: Project[] = await prisma.project.findMany({
+  const result = await prisma.language.findUnique({
     where: {
-      language: {
-        some: {
-          languageName: name,
-        },
-      },
+      name: name,
     },
+    select:{
+      name: true,
+      experties:true,
+      project:{
+        where:{
+          project:{
+            published:true
+          }
+        },
+        include:{
+          project:{
+            include:{
+              languages:{
+                include:{
+                  language:true
+                }
+              },
+              categories:{
+                include:{
+                  category:true
+                }
+              },
+              images:true,
+            }
+          }
+        }
+        }
+      },
   });
-
   return res.status(200).json(result);
 }
 

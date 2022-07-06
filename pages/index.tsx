@@ -43,7 +43,7 @@ import SideBar, { SideBarProps } from "../components/sidebar";
 import { fullProject } from "../components/prisma";
 
 export async function getServerSideProps() {
-  const project = await fetch("http://localhost:3000/api/project/showcase");
+  const project = await fetch("http://localhost:3000/api/project?showcase=true");
   const projectData = await project.json();
   return {
     props: {
