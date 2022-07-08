@@ -1,0 +1,148 @@
+.main{
+  width: 94%;
+  min-height: 100vh;
+  margin-left: 6%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  p{
+    font-size: 1rem;
+    font-weight: 200;
+    white-space:  pre-line;
+    &::before,&::after{
+      font-size: 0.8rem;
+      color:  var(--color-secondary);
+    }
+    &::before{
+      content:"<p>";
+    }
+    &::after{
+      content:"</p>";
+    }
+  }
+  h1{
+    flex-direction: column;
+    font-size: 5rem;
+    font-weight: 200;
+    white-space:  pre-line;
+    &::before,&::after{
+      font-size: 0.8rem;
+      color:  var(--color-secondary);
+    }
+    &::before{
+      content:"<h1>";
+    }
+    &::after{
+      content:"</h1>";
+    }
+  }
+  h2{
+    flex-direction: column;
+    font-size: 3rem;
+    font-weight: 100;
+    white-space:  pre-line;
+    &::before,&::after{
+      font-size: 0.8rem;
+      color: var(--color-secondary);
+    }
+    &::before{
+      content:"<h2>";
+    }
+    &::after{
+      content:"</h2>";
+    }
+  }
+  h3{
+    font-size: 2rem;
+    font-weight: 100;
+    white-space:  pre-line;
+    &::before,&::after{
+      font-size: 0.8rem;
+      color: #30365a73;
+    }
+    &::before{
+      content:"<h3>";
+    }
+    &::after{
+      content:"</h3>";
+    }
+  }
+  h4{
+    font-size: 1.5rem;
+    font-weight: 100;
+    white-space:  pre-line;
+    &::before,&::after{
+      font-size: 0.8rem;
+      color: #30365a73;
+    }
+    &::before{
+      content:"<h4>";
+    }
+    &::after{
+      content:"</h4>";
+    }
+  }
+  section{
+    display: flex;
+    align-items: center;
+  }
+}
+.header{
+  width: 100%;
+  height: 100%;
+  justify-content: space-around;
+  padding: 3rem;
+  div{
+    display: inline-flex;
+  }
+}
+.showcase{
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  .projects{
+    width: 100%;
+    height: 30vh;
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    place-items: center;
+    .project{
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      aspect-ratio: 1/1;
+      p{
+        white-space: nowrap;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%,-50%);
+        font-size: 1.5rem;
+        font-weight: 900;
+        opacity: 0;
+        &::before{
+          content:"";
+        }
+        &::after{
+          content:"";
+        }
+      }
+      &:hover{
+        transition: all ease-in-out 0.5s;
+        p{
+          opacity: 1;
+          transition: all ease-in-out 0.5s;
+        }
+        .image{
+          transition: all ease-in-out 0.5s;
+          opacity: 0.5;
+          filter: blur(2px);
+        }
+      }
+    }
+  }
+}

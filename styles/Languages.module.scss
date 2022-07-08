@@ -1,0 +1,17 @@
+.main{
+  position: relative;
+  width: 94%;
+  height: 100%;
+  display: flex;
+  margin-left: 6%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.languages{
+  width: 100%;
+  margin:1rem;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
