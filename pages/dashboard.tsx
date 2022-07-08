@@ -31,22 +31,22 @@ import { fullProject } from "../components/prisma";
 const sideBarItem: SideBarProps[] = [
   {
     name: "Project",
-    icon: faProjectDiagram,
+    icon: <FontAwesomeIcon icon={faProjectDiagram} />,
     href: "#project",
   },
   {
     name: "faUser",
-    icon: faUser,
+    icon: <FontAwesomeIcon icon={faUser} />,
     href: "#user",
   },
   {
     name: "Language",
-    icon: faLanguage,
+    icon: <FontAwesomeIcon icon={faLanguage} />,
     href: "#language",
   },
   {
     name: "Category",
-    icon: faGroupArrowsRotate,
+    icon: <FontAwesomeIcon icon={faGroupArrowsRotate} />,
     href: "#category",
   },
 ];

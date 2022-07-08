@@ -1,5 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPrisma, faTypeScript } from "./icons";
+import { faCplusplus, faNextJs, faPrisma, faTypeScript } from "./icons";
+import { useState, useEffect } from "react";
 import {
   faCss3,
   faHtml5,
@@ -7,41 +8,96 @@ import {
   faPython,
   IconDefinition,
   faGit,
-  faNodeJs
+  faNodeJs,
+  faNode,
+  faRaspberryPi,
+  faSass,
+  faReact,
 } from "@fortawesome/free-brands-svg-icons";
-import { faDatabase } from "@fortawesome/free-solid-svg-icons";
+import { fa0, faC, faDatabase, faInfinity } from "@fortawesome/free-solid-svg-icons";
 import styles from "../styles/Layout.module.scss";
-const Icon = (props: { icon: IconDefinition,name:string }) => {
+import { SizeProp } from "@fortawesome/fontawesome-svg-core";
+const Icon = (props: { icon: IconDefinition; name: string; animation:boolean;size:SizeProp}) => {
   return (
-    <div className={styles.iconholder}>
-      <i><FontAwesomeIcon icon={props.icon} size="3x" /></i>
-      <p>{props.name}</p>
+    <div className={props.animation? styles.iconholder:styles.iconholder_noanimation}>
+      <i>
+        <FontAwesomeIcon icon={props.icon} size={props.size} />
+      </i>
+      {
+        props.animation?
+        <p>{props.name}</p>:
+        <></>
+      }
     </div>
   );
 };
 
-const ToIcon = (props: { icon: string }) => {
-  switch (props.icon) {
-    case "typescript":
-      return <Icon icon={faTypeScript} name={props.icon}/>;
-    case "css":
-      return <Icon icon={faCss3} name={props.icon}/>;
-    case "html":
-      return <Icon icon={faHtml5} name={props.icon}/>;
-    case "javascript":
-      return <Icon icon={faJs} name={props.icon}/>;
-    case "python":
-      return <Icon icon={faPython} name={props.icon}/>;
-    case "sql":
-      return <Icon icon={faDatabase} name={props.icon}/>;
-    case "prisma":
-      return <Icon icon={faPrisma} name={props.icon}/>;
-    case "git":
-      return <Icon icon={faGit} name={props.icon}/>;
-    case "nodejs":
-      return <Icon icon={faNodeJs} name={props.icon}/>;
-    default:
-      return <></>;
-  }
+const defaultProps = {
+  icon:"",
+  animation:true,
+  size:"2x"
+}
+const ToIcon = (props: { icon: string ;animation:boolean;size:SizeProp}) => {
+  const [icon,setIcon] = useState<IconDefinition>(fa0);
+  useEffect(()=>{
+    switch (props.icon) {
+      case "typescript":
+        setIcon(faTypeScript);
+        break;
+      case "css":
+        setIcon(faCss3);
+        break;
+      case "html":
+        setIcon(faHtml5);
+        break;
+      case "javascript":
+        setIcon(faJs);
+        break;
+      case "python":
+        setIcon(faPython);
+        break;
+      case "sql":
+        setIcon(faDatabase);
+        break;
+      case "prisma":
+        setIcon(faPrisma);
+        break;
+      case "git":      
+        setIcon(faGit)
+        break;
+      case "Nodejs":
+        setIcon(faNodeJs)
+        break;
+      case "C++":
+        setIcon(faCplusplus)
+        break;
+      case "C":
+        setIcon(faC)
+        break;
+      case "raspberrypi":
+        setIcon(faRaspberryPi)
+        break;
+      case "arduino":
+        setIcon(faInfinity)
+        break;
+      case "node":
+        setIcon(faNode)
+        break;
+      case "scss":
+        setIcon(faSass)
+        break;
+      case "nextjs":
+        setIcon(faNextJs)
+        break;
+      case "react":
+        setIcon(faReact)
+        break;
+      // case ""
+      default:
+        setIcon(fa0)
+    }
+  },[]);
+  return <FontAwesomeIcon icon={icon} size={props.size}/>
 };
+ToIcon.defaultProps = defaultProps
 export default ToIcon;

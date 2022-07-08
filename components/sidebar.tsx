@@ -15,16 +15,15 @@ import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { IParallax } from "@react-spring/parallax";
 import React from "react";
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 export interface SideBarProps {
   name: string;
-  icon: IconDefinition;
+  icon: JSX.Element;
   href: string;
   onClick?: any;
 }
 
-const SideBar = (props: { item; name }) => {
+const SideBar = (props: { item:SideBarProps[]; name:string}) => {
   const [sideBar, setSideBar] = React.useState<SideBarProps[]>(props.item);
   const date = new Date();
   const { data, status } = useSession();
@@ -41,7 +40,7 @@ const SideBar = (props: { item; name }) => {
           return (
             <Link key={item.name} href={item.href} passHref>
               <span className={styles.button} onClick={item.onClick}>
-                <FontAwesomeIcon icon={item.icon} />
+                {item.icon}
                 <p>{item.name}</p>
               </span>
             </Link>

@@ -17,14 +17,7 @@ import { faStar } from "@fortawesome/free-regular-svg-icons";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import ToIcon from "../../components/toIcon";
 
-const sidebarItem: SideBarProps[] = [
-  {
-    name: "test",
-    icon: fa0,
-    href: "test",
-    onClick: () => {},
-  },
-];
+const sidebarItem: SideBarProps[] = [];
 export const getStaticPaths: GetStaticPaths = async () => {
   const projects = await prisma.project.findMany({
     select: {

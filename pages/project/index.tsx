@@ -16,12 +16,12 @@ import Carousel from "../../components/carousel";
 const sidebarItem:SideBarProps[] = [
   {
     name:"test",
-    icon:fa0,
+    icon: <FontAwesomeIcon icon={faSearch}/>,
     href:"test",
     onClick:()=>{}
   },{
     name:"search",
-    icon:faSearch,
+    icon: <FontAwesomeIcon icon={faSearch}/>,
     href:"search",
     onClick:()=>{}
   }

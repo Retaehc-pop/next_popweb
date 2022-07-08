@@ -72,14 +72,14 @@ model Experience {
 model Category {
   id      Int                   @id @default(autoincrement())
   name    String                @unique
-  project CategoriesOnProject[]
+  projects CategoriesOnProject[]
 }
 
 model Language {
   id        Int                 @id @default(autoincrement())
   name      String              @unique
   experties Int?                @default(0)
-  project   LanguageOnProject[]
+  projects   LanguageOnProject[]
 }
 
 model Project {

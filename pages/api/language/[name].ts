@@ -59,7 +59,7 @@ async function handleGet(req: NextApiRequest, res: NextApiResponse) {
     select:{
       name: true,
       experties:true,
-      project:{
+      projects:{
         where:{
           project:{
             published:true

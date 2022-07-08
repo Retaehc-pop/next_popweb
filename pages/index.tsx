@@ -51,7 +51,29 @@ export async function getServerSideProps() {
     },
   };
 }
-
+export const HexagonalTile = (props) => {
+  const [hexItem, setHexItem] = React.useState(props);
+  return (
+    <div className={styles.hex}>
+      {hexItem.map((item) =>
+        item.name === "none" ? (
+          <div key={item.name}>
+            <div style={{ background: "transparent" }}></div>
+          </div>
+        ) : (
+          <div key={item.name}>
+            <div>
+              <i>
+                <FontAwesomeIcon icon={item.icon} />
+              </i>
+              <p>{item.name}</p>
+            </div>
+          </div>
+        )
+      )}
+    </div>
+  );
+};
 const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
   const date = new Date();
   const parallax = useRef<IParallax>(null!);
@@ -66,58 +88,36 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
     {
       name: "About me",
       href: "#about",
-      icon: faUser,
+      icon: <FontAwesomeIcon icon={faUser}/>,
       onClick: () => parallaxScrollTo(1),
     },
     {
       name: "Experties",
       href: "#Experties",
-      icon: faCode,
+      icon: <FontAwesomeIcon icon={faCode}/>,
       onClick: () => parallaxScrollTo(2),
     },
     {
       name: "Projects",
       href: "#Projects",
-      icon: faDiagramProject,
+      icon: <FontAwesomeIcon icon={faDiagramProject}/>,
       onClick: () => parallaxScrollTo(3),
     },
     {
       name: "Experience",
       href: "#Experience",
-      icon: faCrown,
+      icon: <FontAwesomeIcon icon={faCrown}/>,
       onClick: () => parallaxScrollTo(4),
     },
     {
       name: "Contact",
       href: "#contact",
-      icon: faAddressCard,
+      icon: <FontAwesomeIcon icon={faAddressCard}/>,
       onClick: () => parallaxScrollTo(5),
     },
   ];
 
-  const hexagonalTile = (props) => {
-    const [hexItem, setHexItem] = React.useState(props);
-    return (
-      <div className={styles.hex}>
-        {hexItem.map((item) =>
-          item.name === "none" ? (
-            <div key={item.name}>
-              <div style={{ background: "transparent" }}></div>
-            </div>
-          ) : (
-            <div key={item.name}>
-              <div>
-                <i>
-                  <FontAwesomeIcon icon={item.icon} />
-                </i>
-                <p>{item.name}</p>
-              </div>
-            </div>
-          )
-        )}
-      </div>
-    );
-  };
+  
   return (
     <>
       <Head>
@@ -204,7 +204,7 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
                 <h1>Experties</h1>
               </div>
               <section>
-                {hexagonalTile([
+                {HexagonalTile([
                   { name: "none", icon: null },
                   { name: "Python", icon: faPython },
                   { name: "mySQL", icon: faDatabase },
@@ -215,7 +215,7 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
                   { name: "C++", icon: faCplusplus },
                   { name: "Sass/Scss", icon: faSass },
                 ])}
-                {hexagonalTile([
+                {HexagonalTile([
                   { name: "none", icon: null },
                   { name: "RaspberryPi", icon: faRaspberryPi },
                   { name: "Ardino", icon: faInfinity },

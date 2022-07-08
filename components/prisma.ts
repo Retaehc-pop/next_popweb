@@ -30,7 +30,7 @@ export type fullProject = Prisma.ProjectGetPayload<{
 
 export type fullLanguage = Prisma.LanguageGetPayload<{
   include: {
-    project: {
+    projects: {
       include: {
         project: {
           include:{
