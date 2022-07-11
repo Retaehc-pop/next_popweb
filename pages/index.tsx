@@ -90,13 +90,7 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
       href: "#Experience",
       icon: <FontAwesomeIcon icon={faCrown} />,
       onClick: () => parallaxScrollTo(4),
-    },
-    {
-      name: "Contact",
-      href: "#contact",
-      icon: <FontAwesomeIcon icon={faAddressCard} />,
-      onClick: () => parallaxScrollTo(5),
-    },
+    }
   ];
 
   return (
