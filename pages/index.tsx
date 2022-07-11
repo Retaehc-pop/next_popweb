@@ -103,7 +103,7 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
       <main className={styles.main}>
         <section className={styles.parallax}>
           <Parallax ref={parallax} pages={5}>
-            <ParallaxLayer offset={0} speed={0.1} className={styles.landing}>
+            <ParallaxLayer offset={0} speed={0.1} className={styles.landing} onClick={() => parallaxScrollTo(1)}>
               <div>
                 <h1>
                   Hi,
@@ -154,8 +154,9 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
             </ParallaxLayer>
 
             <ParallaxLayer offset={1} speed={0.6} className={styles.about}>
-              <section>
+              <section style={{padding:"2rem"}}>
                 <h2>Papop Lekhapanyaporn</h2>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Obcaecati temporibus quaerat expedita libero nihil accusantium! Atque modi soluta velit. Magnam quam pariatur molestias, asperiores eligendi iusto ipsa fugit assumenda veritatis?</p>
               </section>
               <VisibilitySensor partialVisibility>
                 {({ isVisible }) => (
@@ -298,7 +299,7 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
               <h3>My best project</h3>
               <section>
                 {projects.map((project) => (
-                  <div key={project.name}>
+                  <div key={project.name} className={styles.project}>
                     <Image
                       src={project.images[0].url}
                       alt={project.name}
@@ -306,7 +307,12 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
                       layout="fill"
                       objectFit="cover"
                     />
-                    <h3>{project.name}</h3>
+                    <div>
+                      <h3>{project.name}</h3>
+                      <Link href={`/project/${project.name}`} passHref>
+                        <p>View Project <FontAwesomeIcon icon={faArrowRight}/></p>
+                      </Link>
+                    </div>
                   </div>
                 ))}
               </section>
