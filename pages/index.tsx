@@ -39,11 +39,14 @@ import {
   faNextJs,
   faPrisma,
 } from "../components/icons/";
+import { useRouter } from "next/router";
 import SideBar, { SideBarProps } from "../components/sidebar";
 import { fullProject } from "../components/prisma";
-
+import HexagonalTile from "../components/hexagonalTile";
 export async function getServerSideProps() {
-  const project = await fetch("http://localhost:3000/api/project?showcase=true");
+  const project = await fetch(
+    "http://localhost:3000/api/project?showcase=true"
+  );
   const projectData = await project.json();
   return {
     props: {
@@ -51,32 +54,11 @@ export async function getServerSideProps() {
     },
   };
 }
-export const HexagonalTile = (props) => {
-  const [hexItem, setHexItem] = React.useState(props);
-  return (
-    <div className={styles.hex}>
-      {hexItem.map((item) =>
-        item.name === "none" ? (
-          <div key={item.name}>
-            <div style={{ background: "transparent" }}></div>
-          </div>
-        ) : (
-          <div key={item.name}>
-            <div>
-              <i>
-                <FontAwesomeIcon icon={item.icon} />
-              </i>
-              <p>{item.name}</p>
-            </div>
-          </div>
-        )
-      )}
-    </div>
-  );
-};
+
 const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
   const date = new Date();
   const parallax = useRef<IParallax>(null!);
+  const router = useRouter();
 
   const parallaxScrollTo = (page) => {
     if (parallax.current !== null) {
@@ -88,36 +70,35 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
     {
       name: "About me",
       href: "#about",
-      icon: <FontAwesomeIcon icon={faUser}/>,
+      icon: <FontAwesomeIcon icon={faUser} />,
       onClick: () => parallaxScrollTo(1),
     },
     {
       name: "Experties",
       href: "#Experties",
-      icon: <FontAwesomeIcon icon={faCode}/>,
+      icon: <FontAwesomeIcon icon={faCode} />,
       onClick: () => parallaxScrollTo(2),
     },
     {
       name: "Projects",
       href: "#Projects",
-      icon: <FontAwesomeIcon icon={faDiagramProject}/>,
+      icon: <FontAwesomeIcon icon={faDiagramProject} />,
       onClick: () => parallaxScrollTo(3),
     },
     {
       name: "Experience",
       href: "#Experience",
-      icon: <FontAwesomeIcon icon={faCrown}/>,
+      icon: <FontAwesomeIcon icon={faCrown} />,
       onClick: () => parallaxScrollTo(4),
     },
     {
       name: "Contact",
       href: "#contact",
-      icon: <FontAwesomeIcon icon={faAddressCard}/>,
+      icon: <FontAwesomeIcon icon={faAddressCard} />,
       onClick: () => parallaxScrollTo(5),
     },
   ];
 
-  
   return (
     <>
       <Head>
@@ -162,9 +143,14 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
                       <p>Github</p>
                     </div>
                   </Link>
-                  <Link href="https://discordapp.com/users/267572826418970624" passHref>
+                  <Link
+                    href="https://discordapp.com/users/267572826418970624"
+                    passHref
+                  >
                     <div>
-                      <i><FontAwesomeIcon icon={faDiscord} size="2x" /></i>
+                      <i>
+                        <FontAwesomeIcon icon={faDiscord} size="2x" />
+                      </i>
                       <p>Discord</p>
                     </div>
                   </Link>
@@ -174,9 +160,9 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
             </ParallaxLayer>
 
             <ParallaxLayer offset={1} speed={0.6} className={styles.about}>
-                <section>
-                  <h2>Papop Lekhapanyaporn</h2>
-                </section>
+              <section>
+                <h2>Papop Lekhapanyaporn</h2>
+              </section>
               <VisibilitySensor partialVisibility>
                 {({ isVisible }) => (
                   <section>
@@ -204,28 +190,112 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
                 <h1>Experties</h1>
               </div>
               <section>
-                {HexagonalTile([
-                  { name: "none", icon: null },
-                  { name: "Python", icon: faPython },
-                  { name: "mySQL", icon: faDatabase },
-                  { name: "Prisma.io", icon: faPrisma },
-                  { name: "TypeScript", icon: faTypeScript },
-                  { name: "C", icon: faC },
-                  { name: "none", icon: null },
-                  { name: "C++", icon: faCplusplus },
-                  { name: "Sass/Scss", icon: faSass },
-                ])}
-                {HexagonalTile([
-                  { name: "none", icon: null },
-                  { name: "RaspberryPi", icon: faRaspberryPi },
-                  { name: "Ardino", icon: faInfinity },
-                  { name: "HTML5", icon: faHtml5 },
-                  { name: "Node.Js", icon: faNodeJs },
-                  { name: "Pytorch", icon: faFire },
-                  { name: "none", icon: null },
-                  { name: "Next.js", icon: faNextJs },
-                  { name: "React", icon: faReact },
-                ])}
+                <HexagonalTile
+                  hexitem={[
+                    {
+                      name: "Python",
+                      icon: <FontAwesomeIcon icon={faPython}/>,
+                      onClick: () => {
+                        router.push("/language#python");
+                      },
+                    },
+                    {
+                      name: "MySQL",
+                      icon: <FontAwesomeIcon icon={faDatabase}/>,
+                      onClick: () => {
+                        router.push("/language#mysql");
+                      },
+                    },
+                    {
+                      name:"Prisma.io",
+                      icon: <FontAwesomeIcon icon={faPrisma}/>,
+                      onClick: () => {
+                        router.push("/language#prisma");
+                      }
+                    },
+                    {
+                      name: "TypeScript",
+                      icon: <FontAwesomeIcon icon={faTypeScript}/>,
+                      onClick: () => {
+                        router.push("/language#typescript");
+                      },
+                    },
+                    {
+                      name: "C",
+                      icon: <FontAwesomeIcon icon={faC}/>,
+                      onClick: () => {
+                        router.push("/language#cplusplus");
+                      },
+                    },
+                    {
+                      name: "C++",
+                      icon: <FontAwesomeIcon icon={faCplusplus}/>,
+                      onClick: () => {
+                        router.push("/language#cplusplus");
+                      }
+                    },
+                    {
+                      name: "Sass/Scss",
+                      icon: <FontAwesomeIcon icon={faSass}/>,
+                      onClick: () => {
+                        router.push("/language#sass");
+                      }
+                    }
+                  ]}
+                />
+                <HexagonalTile
+                  hexitem={[
+                    {
+                      name: "RaspberryPi",
+                      icon: <FontAwesomeIcon icon={faRaspberryPi}/>,
+                      onClick: () => {
+                        router.push("/language#raspberrypi");
+                      },
+                    },
+                    {
+                      name: "Arduino",
+                      icon: <FontAwesomeIcon icon={faInfinity}/>,
+                      onClick: () => {
+                        router.push("/language#arduino");
+                      },
+                    },
+                    {
+                      name:"HTML5",
+                      icon: <FontAwesomeIcon icon={faHtml5}/>,
+                      onClick: () => {
+                        router.push("/language#html");
+                      }
+                    },
+                    {
+                      name: "Node.js",
+                      icon: <FontAwesomeIcon icon={faNodeJs}/>,
+                      onClick: () => {
+                        router.push("/language#nodejs");
+                      },
+                    },
+                    {
+                      name: "Pytorch",
+                      icon: <FontAwesomeIcon icon={faFire}/>,
+                      onClick: () => {
+                        router.push("/language#pytorch");
+                      },
+                    },
+                    {
+                      name: "Next.js",
+                      icon: <FontAwesomeIcon icon={faNextJs}/>,
+                      onClick: () => {
+                        router.push("/language#nextjs");
+                      }
+                    },
+                    {
+                      name: "React",
+                      icon: <FontAwesomeIcon icon={faReact}/>,
+                      onClick: () => {
+                        router.push("/language#react");
+                      }
+                    }
+                  ]}
+                />
               </section>
             </ParallaxLayer>
 
@@ -233,17 +303,24 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
               <h1>Project</h1>
               <h3>My best project</h3>
               <section>
-                {
-                  projects.map((project) => (
-                    <div key={project.name}>
-                      <Image src={project.images[0].url} alt={project.name} className={styles.image} layout="fill" objectFit="cover"/>
-                      <h3>{project.name}</h3>
-                    </div>
-                  ))
-                }
+                {projects.map((project) => (
+                  <div key={project.name}>
+                    <Image
+                      src={project.images[0].url}
+                      alt={project.name}
+                      className={styles.image}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                    <h3>{project.name}</h3>
+                  </div>
+                ))}
               </section>
-              <Link href="/project" passHref >
-                <h3 className={styles.link}>More Project<FontAwesomeIcon icon={faArrowRight}/></h3>
+              <Link href="/project" passHref>
+                <h3 className={styles.link}>
+                  More Project
+                  <FontAwesomeIcon icon={faArrowRight} />
+                </h3>
               </Link>
             </ParallaxLayer>
 
@@ -251,8 +328,7 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
               <section>
                 <h1>Experience</h1>
               </section>
-              <section>
-              </section>
+              <section></section>
             </ParallaxLayer>
           </Parallax>
         </section>

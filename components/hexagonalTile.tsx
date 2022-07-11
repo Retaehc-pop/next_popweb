@@ -2,23 +2,40 @@ import ToIcon from "./toIcon";
 import { useState } from "react";
 import styles from "../styles/Layout.module.scss";
 import React from "react";
-const HexagonalTile = (props) =>{
-  const [hexItem, setHexItem] = React.useState([{
-    name:"",
-    onClick:()=>{},
-  }]);
-    return(
-      <div className={styles.hex}>
-      {hexItem.map((item) =>
-        item.name === "none" ? (
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+const HexagonalTile = (props) => {
+  const [hexItem, setHexItem] = useState(props.hexitem);
+  const [test,setTest] = useState([
+    {
+      name:"test",
+      icon: <FontAwesomeIcon icon={faUser} />,
+      onClick:()=>{}
+    }
+  ]);
+  return (
+    <div className={styles.hex}>
+      {hexItem.map((item,index) =>
+       
+        index === 0 || index === 5 ? (
+            <>
           <div key={item.name}>
             <div style={{ background: "transparent" }}></div>
           </div>
+          <div key={item.name}>
+            <div onClick={item.onClick}>
+              <i>
+                {item.icon}
+              </i>
+              <p>{item.name}</p>
+            </div>
+          </div>
+          </>
         ) : (
           <div key={item.name}>
-            <div>
+            <div onClick={item.onClick}>
               <i>
-                <ToIcon icon={item.name}/>
+                {item.icon}
               </i>
               <p>{item.name}</p>
             </div>
@@ -26,7 +43,7 @@ const HexagonalTile = (props) =>{
         )
       )}
     </div>
-    )
-}
+  );
+};
 
 export default HexagonalTile;

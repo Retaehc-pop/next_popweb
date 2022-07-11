@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import styles from "../../styles/Projects.module.scss";
 import Sidebar,{SideBarProps} from "../../components/sidebar";
 import { fullProject } from "../../components/prisma";
-import { fa0,faProjectDiagram,faSearch } from "@fortawesome/free-solid-svg-icons";
+import { fa0,faFilter,faProjectDiagram,faSearch, faSort } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Modal from "../../components/modal";
 import { faGit, faGithub } from "@fortawesome/free-brands-svg-icons";
@@ -15,16 +15,30 @@ import ToIcon from "../../components/toIcon";
 import Carousel from "../../components/carousel";
 const sidebarItem:SideBarProps[] = [
   {
-    name:"test",
-    icon: <FontAwesomeIcon icon={faSearch}/>,
-    href:"test",
-    onClick:()=>{}
-  },{
     name:"search",
     icon: <FontAwesomeIcon icon={faSearch}/>,
-    href:"search",
+    href:"",
     onClick:()=>{}
-  }
+  },
+  {
+    name:"project",
+    icon: <FontAwesomeIcon icon={faProjectDiagram}/>,
+    href:"",
+    onClick:()=>{}
+  },
+  {
+    name:"filter",
+    icon: <FontAwesomeIcon icon={faFilter}/>,
+    href:"",
+    onClick:()=>{}
+  },
+  {
+    name:"sort",
+    icon: <FontAwesomeIcon icon={faSort}/>,
+    href:"",
+    onClick:()=>{}
+  },
+  
 ]
 
 const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
