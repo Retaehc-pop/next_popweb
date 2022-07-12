@@ -271,7 +271,7 @@ const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject
                 {item.images[0] ? (
                   <Image src={item.images[0].url} alt={item.images[0].alt} layout="fill" objectFit="cover"/>
                 ) : (
-                  <Image src="http://via.placeholder.com/150" layout="fill" objectFit="cover"/>
+                  <Image src="http://via.placeholder.com/150" alt="" layout="fill" objectFit="cover"/>
                 )}
                 <p>{item.name}</p>
               </div>
