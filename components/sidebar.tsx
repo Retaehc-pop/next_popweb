@@ -2,18 +2,12 @@ import styles from "../styles/Layout.module.scss";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUser,
-  faCode,
-  faDiagramProject,
-  faCrown,
-  faAddressCard,
   faLock,
   faArrowRightFromBracket,
   faCubes,
 } from "@fortawesome/free-solid-svg-icons";
 import Image from "next/image";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { IParallax } from "@react-spring/parallax";
 import React from "react";
 
 export interface SideBarProps {

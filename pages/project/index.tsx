@@ -37,18 +37,33 @@ const sidebarItem:SideBarProps[] = [
   
 ]
 
-const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
+const Project: NextPage = (props:{projects: fullProject[]}) => {
+  const [projects, setProjects] = useState<fullProject[]>(props.projects);
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
   const { pathname, query } = router
-  const [search,setSearch] = useState("");
+  const [search,setSearch] = useState('');
 
 
   const searchValue = ({search}) => {
-    const href = `${pathname}/?search=${search}`;
+    const href = search==="" ? `${pathname}`:`${pathname}?search=${search}`;
     router.push(href, href, {shallow: true});
   }
 
+  useEffect(() => {
+    if (query.search) {
+      setSearch(`${query.search}`);
+      setProjects(props.projects.filter(project => project.name.toLowerCase().includes(`${query.search}`.toLowerCase())))
+    }
+    else{
+      setProjects(props.projects);
+    }
+  }
+  , [query.search]);
+
+  useEffect(() => {
+    console.log(projects,"projects")
+  },[projects]);
 
   const [selectedProject, setSelectedProject] = useState<fullProject>({
     id: 1,
@@ -88,21 +103,24 @@ const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
             searchValue({search:e.target.value});
           }}/>
         </div>
-        {/* <div className={styles.header}>
-          <div className={styles.icon} style={{gridArea:"1/1/2/2"}}>
-            <h1><FontAwesomeIcon icon={faProjectDiagram}/></h1>
+        <div className={styles.header}>
+          <div>
+            <h4>12345</h4>
+            <p>Project</p>
           </div>
-          <div className={styles.infos} style={{gridArea:"1/2/2/4",justifyContent:"space-around"}}>
-            <span>
-              <h2>{projects.length}</h2>
-              <h2>Project</h2>
-            </span>
-            <span>
-              <h2>1</h2>
-              <h2>showcase</h2>
-            </span>
+          <div>
+            <h4>3</h4>
+            <p>Website</p>
           </div>
-        </div> */}
+          <div>
+            <h4>2</h4>
+            <p>AI</p>
+          </div>
+          <div>
+            <h4>5</h4>
+            <p>Competition</p>
+          </div>
+        </div>
       </section>
       <section className={styles.showcase}>
         {

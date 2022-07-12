@@ -18,6 +18,7 @@ import { faGithub } from "@fortawesome/free-brands-svg-icons";
 import ToIcon from "../../components/toIcon";
 
 const sidebarItem: SideBarProps[] = [];
+
 export const getStaticPaths: GetStaticPaths = async () => {
   const projects = await prisma.project.findMany({
     select: {
@@ -34,10 +35,26 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const { name } = params;
-  const res = await fetch(`http://localhost:3000/api/project/${name}`);
-  const project = await res.json();
+  const res:fullProject = await prisma.project.findUnique({
+    where: {
+      name:`${name}`,
+    },
+    include:{
+      languages: {
+        select: {
+          language: true,
+        },
+      },
+      categories: {
+        select: {
+          category: true,
+        }
+      },
+      images: true,
+    }
+  })
   return {
-    props: { project },
+    props: { project:JSON.parse(JSON.stringify(res))},
   };
 };
 

@@ -19,7 +19,6 @@
     "@react-spring/parallax": "^9.4.5",
     "@react-spring/three": "^9.4.5",
     "@react-spring/web": "^9.4.5",
-    "@react-three/drei": "^9.11.0",
     "@react-three/fiber": "^8.0.17",
     "aws-sdk": "^2.1156.0",
     "axios": "^0.27.2",
