@@ -67,12 +67,12 @@ const Project: NextPage = ({ project }: { project: fullProject }) => {
               <FontAwesomeIcon icon={faStar} size="2x" />
             )}
           </div>
-          <div>
+          <div style={project.started&&project.ended ? {}:{display:"none"}}>
             {project.started ? (
               <h2>
                 {new Date(project.started).getDate()}/
                 {new Date(project.started).getMonth()}/
-                {new Date(project.started).getFullYear()}
+                {new Date(project.started).getFullYear()}-
               </h2>
             ) : (
               <></>
@@ -90,22 +90,24 @@ const Project: NextPage = ({ project }: { project: fullProject }) => {
           <div>
             <p>{project.description}</p>
           </div>
-          <div>
+          <div className={styles.languages}>
             {project.languages.map((language) => (
               <ToIcon icon={language.language.name} />
             ))}
           </div>
-          <div>
-            <p>tag:</p>
+          <div className={styles.categories}>
+            <h4>tag:</h4>
             {project.categories.map((category) => (
-              <h5>{category.category.name}</h5>
+              <Link href="" passHref>
+                <p>{category.category.name}</p>
+              </Link>
             ))}
           </div>
           <div>
-            <h2>Source Code</h2>
             <Link href={project.github} passHref>
               <FontAwesomeIcon icon={faGithub} size="2x" />
             </Link>
+            <p style={{marginLeft:"1rem"}}>{project.github}</p>
           </div>
         </section>
       </main>

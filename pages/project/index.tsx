@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "../../styles/Projects.module.scss";
+import { useRouter } from "next/router";
 import Sidebar,{SideBarProps} from "../../components/sidebar";
 import { fullProject } from "../../components/prisma";
 import { fa0,faFilter,faProjectDiagram,faSearch, faSort } from "@fortawesome/free-solid-svg-icons";
@@ -13,16 +14,11 @@ import { faGit, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faTypeScript } from "../../components/icons";
 import ToIcon from "../../components/toIcon";
 import Carousel from "../../components/carousel";
+
 const sidebarItem:SideBarProps[] = [
   {
     name:"search",
     icon: <FontAwesomeIcon icon={faSearch}/>,
-    href:"",
-    onClick:()=>{}
-  },
-  {
-    name:"project",
-    icon: <FontAwesomeIcon icon={faProjectDiagram}/>,
     href:"",
     onClick:()=>{}
   },
@@ -43,6 +39,17 @@ const sidebarItem:SideBarProps[] = [
 
 const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
   const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
+  const { pathname, query } = router
+  const [search,setSearch] = useState("");
+
+
+  const searchValue = ({search}) => {
+    const href = `${pathname}/?search=${search}`;
+    router.push(href, href, {shallow: true});
+  }
+
+
   const [selectedProject, setSelectedProject] = useState<fullProject>({
     id: 1,
     name: "",
@@ -74,29 +81,33 @@ const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
       <Sidebar item={sidebarItem} name="Project" />
       <main className={styles.main}>
       <section className={styles.landing}>
-        <div>
-          <h1>Projects</h1>
+        <div className={styles.search}>
+          <FontAwesomeIcon icon={faSearch}/>
+          <input type="text" value={search} onChange={(e)=>{
+            setSearch(e.target.value);
+            searchValue({search:e.target.value});
+          }}/>
         </div>
-        <div style={{width:"100%",justifyContent:"center",alignItems:"center",display:"grid",gridTemplateColumns:"repeat(3,1fr)"}}>
-          <div style={{gridArea:"1/1/2/2"}}>
+        {/* <div className={styles.header}>
+          <div className={styles.icon} style={{gridArea:"1/1/2/2"}}>
             <h1><FontAwesomeIcon icon={faProjectDiagram}/></h1>
           </div>
-          <div style={{gridArea:"1/2/2/4",justifyContent:"space-around"}}>
+          <div className={styles.infos} style={{gridArea:"1/2/2/4",justifyContent:"space-around"}}>
             <span>
               <h2>{projects.length}</h2>
               <h2>Project</h2>
             </span>
             <span>
               <h2>1</h2>
-              <h2>2</h2>
+              <h2>showcase</h2>
             </span>
           </div>
-        </div>
+        </div> */}
       </section>
       <section className={styles.showcase}>
         {
           projects.map(project=>(
-            <div className={styles.project__container} onClick={()=>{setOpenModal(true);setSelectedProject(project)}}>
+            <div className={styles.project__container} key={project.name} onClick={()=>{setOpenModal(true);setSelectedProject(project)}}>
               <Image src={project.images[0].url} alt={project.images[0].alt} width={"300px"} height={"300px"}/>
               <p>{project.name}</p>
             </div>
