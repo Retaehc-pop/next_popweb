@@ -92,13 +92,13 @@ const Project: NextPage = ({ project }: { project: fullProject }) => {
           </div>
           <div className={styles.languages}>
             {project.languages.map((language) => (
-              <ToIcon icon={language.language.name} />
+              <ToIcon key={language.language.id} icon={language.language.name} />
             ))}
           </div>
           <div className={styles.categories}>
             <h4>tag:</h4>
             {project.categories.map((category) => (
-              <Link href="" passHref>
+              <Link key={category.category.id} href="" passHref>
                 <p>{category.category.name}</p>
               </Link>
             ))}

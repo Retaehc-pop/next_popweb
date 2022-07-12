@@ -96,7 +96,7 @@ const ToIcon = (props: { icon: string ;animation:boolean;size:SizeProp}) => {
       default:
         setIcon(fa0)
     }
-  },[]);
+  },[props.icon]);
   return <FontAwesomeIcon icon={icon} size={props.size}/>
 };
 ToIcon.defaultProps = defaultProps

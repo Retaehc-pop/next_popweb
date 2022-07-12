@@ -93,10 +93,6 @@ const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject
     categories:[]
   });
 
-  useEffect(() => {
-    console.log(selectProject);
-    console.log(toCreate)
-  }, [selectProject]);
 
   async function uploadImage(image: File) {
     var formData = new FormData();
@@ -273,9 +269,9 @@ const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject
                 }}
               >
                 {item.images[0] ? (
-                  <img src={item.images[0].url} alt={item.images[0].alt} />
+                  <Image src={item.images[0].url} alt={item.images[0].alt} layout="fill" objectFit="cover"/>
                 ) : (
-                  <img src="http://via.placeholder.com/150"></img>
+                  <Image src="http://via.placeholder.com/150" layout="fill" objectFit="cover"/>
                 )}
                 <p>{item.name}</p>
               </div>

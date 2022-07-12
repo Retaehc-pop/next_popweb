@@ -34,6 +34,7 @@
     grid-template-columns: repeat(auto-fit, 200px);
     width: 100%;
     .projects{
+      position: relative;
       width: 100%;
       height:auto;
       aspect-ratio: 1/1;

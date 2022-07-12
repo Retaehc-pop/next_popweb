@@ -131,13 +131,13 @@ const Project: NextPage = ({projects}:{projects: fullProject[];}) => {
               <p>{selectedProject.description}</p>
               <div className={styles.icons}>
                 {selectedProject.languages.map(language=>(
-                  <ToIcon icon={language.language.name}/>
+                  <ToIcon key={language.language.id} icon={language.language.name}/>
                 ))}
               </div>
               <div className={styles.categories}>
                 <p>tag:</p>
                 {selectedProject.categories.map(category=>(
-                    <h5>{category.category.name}</h5>
+                    <h5 key={category.category.id}>{category.category.name}</h5>
                 ))}
               </div>
               <Link href={selectedProject.github}>
