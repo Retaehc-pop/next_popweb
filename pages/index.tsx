@@ -50,11 +50,24 @@ export async function getServerSideProps() {
   const res = await prisma.project.findMany({
     where:{
       showcase:true
+    },
+    include:{
+      languages:{
+        select:{
+          language:true
+        }
+      },
+      categories:{
+        select:{
+          category:true
+        }
+      },
+      images:true
     }
   })
   return {
     props: {
-      projects: res,
+      projects: JSON.parse(JSON.stringify(res)),
     },
   };
 }
