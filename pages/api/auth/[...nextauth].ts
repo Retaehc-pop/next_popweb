@@ -13,4 +13,11 @@ export default NextAuth({
       clientSecret: process.env.NEXTAUTH_GITHUB_CLIENT_SECRET,
     }),
   ],
+  callbacks:{
+    async redirect({ url, baseUrl}){
+      if (url.startsWith("/api/auth/callback")) return `${baseUrl}${url}`
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    }
+  }
 })
