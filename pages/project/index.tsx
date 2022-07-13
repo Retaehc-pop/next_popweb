@@ -59,7 +59,7 @@ const Project: NextPage = (props:{projects: fullProject[]}) => {
       setProjects(props.projects);
     }
   }
-  , [query.search]);
+  , [query.search,props.projects]);
 
   useEffect(() => {
     console.log(projects,"projects")

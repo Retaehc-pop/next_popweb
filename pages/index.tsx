@@ -43,14 +43,18 @@ import { useRouter } from "next/router";
 import SideBar, { SideBarProps } from "../components/sidebar";
 import { fullProject } from "../components/prisma";
 import HexagonalTile from "../components/hexagonalTile";
+import prisma from "../components/prisma";
+
+
 export async function getServerSideProps() {
-  const project = await fetch(
-    "http://localhost:3000/api/project?showcase=true"
-  );
-  const projectData = await project.json();
+  const res = await prisma.project.findMany({
+    where:{
+      showcase:true
+    }
+  })
   return {
     props: {
-      projects: projectData,
+      projects: res,
     },
   };
 }

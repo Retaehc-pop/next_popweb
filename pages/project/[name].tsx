@@ -1,4 +1,4 @@
-import type { NextPage, GetStaticPaths, GetStaticProps } from "next";
+import type { NextPage, GetStaticPaths, GetStaticProps,GetServerSideProps } from "next";
 import prisma, { fullProject } from "../../components/prisma";
 import Head from "next/head";
 import Link from "next/link";
@@ -19,21 +19,8 @@ import ToIcon from "../../components/toIcon";
 
 const sidebarItem: SideBarProps[] = [];
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const projects = await prisma.project.findMany({
-    select: {
-      name: true,
-    },
-  });
-  const paths = projects.map((project) => ({ params: { name: project.name } }));
 
-  return {
-    paths: paths,
-    fallback: false,
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const { name } = params;
   const res:fullProject = await prisma.project.findUnique({
     where: {
