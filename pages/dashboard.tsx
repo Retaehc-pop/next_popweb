@@ -19,14 +19,14 @@ import {
 import { Carousel } from "primereact/carousel";
 import { Button } from "primereact/button";
 import Modal from "../components/modal";
-import { Project, Language, Category } from "@prisma/client";
+import { Project, Language, Category} from "@prisma/client";
 import Link from "next/link";
 import { ActionMeta, OnChangeValue } from "react-select";
 import { faGit, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { FileUploader } from "react-drag-drop-files";
 import Select from "react-select";
 import CreatableSelect from "react-select/creatable";
-import { fullProject } from "../components/prisma";
+import prisma, { fullProject } from "../components/prisma";
 
 const sideBarItem: SideBarProps[] = [
   {
@@ -52,24 +52,33 @@ const sideBarItem: SideBarProps[] = [
 ];
 
 export async function getServerSideProps() {
-  const project = await fetch("http://localhost:3000/api/project");
-  const language = await fetch("http://localhost:3000/api/language");
-  const category = await fetch("http://localhost:3000/api/category");
-
-  const languageData = await language.json();
-  const projectData = await project.json();
-  const categoryData = await category.json();
+  const projects = await prisma.project.findMany({
+    include:{
+      categories: {
+        select: {
+          category: true
+        }
+      },
+      languages: {
+        select: {
+          language: true
+        }
+      },
+      images: true,
+    }})
+  const languages = await prisma.project.findMany({})
+  const categories =  await prisma.project.findMany({})
 
   return {
     props: {
-      projects: projectData,
-      languages: languageData,
-      categories: categoryData,
+      projects: JSON.parse(JSON.stringify(projects)),
+      languages: JSON.parse(JSON.stringify(languages)),
+      categories: JSON.parse(JSON.stringify(categories)),
     },
   };
 }
 
-const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject[];languages: Language[];categories: Category[];}) => {
+const DashBoard: NextPage = ({projects,languages,categories,}: {projects: fullProject[];languages: Language[];categories: Category[];}) => {
   const [openModal, setOpenModal] = useState(false);
   const [selectProject, setSelectProject] = useState<fullProject>({
     id: 1,
@@ -128,8 +137,6 @@ const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject
   }
 
   async function createProject() {
-    console.log(toCreate);
-    console.log(selectProject)
     new Promise((resolve, reject) => {
       toCreate.images.forEach(async (item, index) => {
         selectProject.images.push(await uploadImage(item));
@@ -179,8 +186,8 @@ const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject
       console.log(2)
       return {
         ...selectProject,
-        started: selectProject.started? selectProject.started.toISOString():null,
-        ended: selectProject.ended? selectProject.ended.toISOString():null,
+        started: selectProject.started? new Date(selectProject.started).toISOString():null,
+        ended: selectProject.ended? new Date(selectProject.ended).toISOString():null,
       }
     })
     .then(res=>{
@@ -194,7 +201,7 @@ const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject
         }
       )
     }).then(res=>res.json()).then(res=>{
-      console.log(res)
+      setOpenModal(false);
     })
   }
 
@@ -224,13 +231,13 @@ const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject
   return (
     <>
       <Head>
-        <title>Test</title>
+        <title>DashBoard</title>
       </Head>
       <SideBar item={sideBarItem} name="dashboard" />
       <main className={styles.main}>
         <section className={styles.project}>
           <div className={styles.header}>
-            <h1>Test</h1>
+            <h1>DashBoard</h1>
             <button
               onClick={() => {
                 setOpenModal(true);
@@ -495,4 +502,4 @@ const Test: NextPage = ({projects,languages,categories,}: {projects: fullProject
   );
 };
 
-export default Test;
+export default DashBoard;

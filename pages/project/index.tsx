@@ -14,6 +14,7 @@ import { faGit, faGithub } from "@fortawesome/free-brands-svg-icons";
 import { faTypeScript } from "../../components/icons";
 import ToIcon from "../../components/toIcon";
 import Carousel from "../../components/carousel";
+import prisma from "../../components/prisma";
 
 const sidebarItem:SideBarProps[] = [
   {
@@ -171,11 +172,28 @@ const Project: NextPage = (props:{projects: fullProject[]}) => {
 };
 
 export async function getServerSideProps() {
-  const project = await fetch("http://localhost:3000/api/project?published=true");
-  const projectData = await project.json();
+  const res:fullProject[] =  await prisma.project.findMany({
+    where:{
+      published:true
+    },
+    include:{
+      images:true,
+      languages:{
+        select:{
+          language:true
+        }
+      },
+      categories:{
+        select:{
+          category:true
+        }
+      }
+    }
+  })
+
   return {
     props: {
-      projects: projectData,
+      projects: JSON.parse(JSON.stringify(res)),
     },
   };
 }
