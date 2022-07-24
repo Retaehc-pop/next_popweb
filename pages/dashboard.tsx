@@ -135,6 +135,13 @@ const DashBoard: NextPage = ({projects,languages,categories,}: {projects: fullPr
     }
     return res.json();
   }
+  // async function createTag(item,tag:string){
+  //   const res = await prisma.category.create({
+  //     data:{
+  //       name: item
+  //     }
+  //   })
+  // }
 
   async function createProject() {
     new Promise((resolve, reject) => {
@@ -213,7 +220,6 @@ const DashBoard: NextPage = ({projects,languages,categories,}: {projects: fullPr
           method: "DELETE",
         }
       );
-
       if (res.status === 200) {
         projects.filter((item) => item.name !== selectProject.name);
         setToCreate({...toCreate,images: []})

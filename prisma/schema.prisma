@@ -13,18 +13,19 @@ datasource db {
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
+  id                       String  @id @default(cuid())
+  userId                   String
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String? @db.Text
+  refresh_token_expires_in Int?
+  access_token             String? @db.Text
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String? @db.Text
+  session_state            String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -58,20 +59,20 @@ model VerificationToken {
 }
 
 model Experience {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   title        String
   organisation String?
   startDate    DateTime?
   endDate      DateTime?
-  complete     Boolean @default(false)
+  complete     Boolean   @default(false)
   description  String
-  project      Project  @relation(fields: [projectId], references: [id])
-  projectId    Int      @unique
+  project      Project   @relation(fields: [projectId], references: [id])
+  projectId    Int       @unique
 }
 
 model Category {
-  id      Int                   @id @default(autoincrement())
-  name    String                @unique
+  id       Int                   @id @default(autoincrement())
+  name     String                @unique
   projects CategoriesOnProject[]
 }
 
@@ -79,7 +80,7 @@ model Language {
   id        Int                 @id @default(autoincrement())
   name      String              @unique
   experties Int?                @default(0)
-  projects   LanguageOnProject[]
+  projects  LanguageOnProject[]
 }
 
 model Project {
