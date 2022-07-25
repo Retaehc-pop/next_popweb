@@ -45,26 +45,25 @@ import { fullProject } from "../components/prisma";
 import HexagonalTile from "../components/hexagonalTile";
 import prisma from "../components/prisma";
 
-
 export async function getServerSideProps() {
   const res = await prisma.project.findMany({
-    where:{
-      showcase:true
+    where: {
+      showcase: true,
     },
-    include:{
-      languages:{
-        select:{
-          language:true
-        }
+    include: {
+      languages: {
+        select: {
+          language: true,
+        },
       },
-      categories:{
-        select:{
-          category:true
-        }
+      categories: {
+        select: {
+          category: true,
+        },
       },
-      images:true
-    }
-  })
+      images: true,
+    },
+  });
   return {
     props: {
       projects: JSON.parse(JSON.stringify(res)),
@@ -107,7 +106,7 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
       href: "#Experience",
       icon: <FontAwesomeIcon icon={faCrown} />,
       onClick: () => parallaxScrollTo(4),
-    }
+    },
   ];
 
   return (
@@ -120,7 +119,12 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
       <main className={styles.main}>
         <section className={styles.parallax}>
           <Parallax ref={parallax} pages={5}>
-            <ParallaxLayer offset={0} speed={0.1} className={styles.landing} onClick={() => parallaxScrollTo(1)}>
+            <ParallaxLayer
+              offset={0}
+              speed={0.1}
+              className={styles.landing}
+              onClick={() => parallaxScrollTo(1)}
+            >
               <div>
                 <h1>
                   Hi,
@@ -171,31 +175,21 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
             </ParallaxLayer>
 
             <ParallaxLayer offset={1} speed={0.6} className={styles.about}>
-              <section style={{padding:"2rem"}}>
+              <section style={{ padding: "2rem" }}>
+                <div className={styles.image}>
+                  <Image style={{borderRadius:"50%"}} alt="profilepic" src="/static/profile.jpg" layout="fill" objectFit="cover"/>
+                </div>
                 <h2>Papop Lekhapanyaporn</h2>
-                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Obcaecati temporibus quaerat expedita libero nihil accusantium! Atque modi soluta velit. Magnam quam pariatur molestias, asperiores eligendi iusto ipsa fugit assumenda veritatis?</p>
               </section>
-              <VisibilitySensor partialVisibility>
-                {({ isVisible }) => (
-                  <section>
-                    <Spring
-                      delay={300}
-                      to={{
-                        borderRadius: isVisible ? "50%" : "0%",
-                        opacity: isVisible ? 1 : 0,
-                      }}
-                    >
-                      {(props) => (
-                        <animated.img
-                          style={{ ...props }}
-                          alt="profilepic"
-                          src="static/profile.jpg"
-                        />
-                      )}
-                    </Spring>
-                  </section>
-                )}
-              </VisibilitySensor>
+              <section style={{width:"60%"}}>
+                <p>
+                  I am a junior developer with a passion for building
+                  AI and Machine Learning. I have a background in Competitive Coding and I am
+                  currently studing Computer Science at{" "}
+                  <a href="https://www.prisma.io/"><span>RWTH Aachen University</span></a>. I code mainly in Python but for Web
+                  Development I use React, Next.js, TypeScript and Node.js. I also have a background in C++ and C for coding Arduino.
+                </p>
+              </section>
             </ParallaxLayer>
             <ParallaxLayer offset={2} speed={0.6} className={styles.experties}>
               <div>
@@ -206,106 +200,106 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
                   hexitem={[
                     {
                       name: "Python",
-                      icon: <FontAwesomeIcon icon={faPython}/>,
+                      icon: <FontAwesomeIcon icon={faPython} />,
                       onClick: () => {
                         router.push("/language#python");
                       },
                     },
                     {
                       name: "MySQL",
-                      icon: <FontAwesomeIcon icon={faDatabase}/>,
+                      icon: <FontAwesomeIcon icon={faDatabase} />,
                       onClick: () => {
                         router.push("/language#mysql");
                       },
                     },
                     {
-                      name:"Prisma.io",
-                      icon: <FontAwesomeIcon icon={faPrisma}/>,
+                      name: "Prisma.io",
+                      icon: <FontAwesomeIcon icon={faPrisma} />,
                       onClick: () => {
                         router.push("/language#prisma");
-                      }
+                      },
                     },
                     {
                       name: "TypeScript",
-                      icon: <FontAwesomeIcon icon={faTypeScript}/>,
+                      icon: <FontAwesomeIcon icon={faTypeScript} />,
                       onClick: () => {
                         router.push("/language#typescript");
                       },
                     },
                     {
                       name: "C",
-                      icon: <FontAwesomeIcon icon={faC}/>,
+                      icon: <FontAwesomeIcon icon={faC} />,
                       onClick: () => {
                         router.push("/language#cplusplus");
                       },
                     },
                     {
                       name: "C++",
-                      icon: <FontAwesomeIcon icon={faCplusplus}/>,
+                      icon: <FontAwesomeIcon icon={faCplusplus} />,
                       onClick: () => {
                         router.push("/language#cplusplus");
-                      }
+                      },
                     },
                     {
                       name: "Sass/Scss",
-                      icon: <FontAwesomeIcon icon={faSass}/>,
+                      icon: <FontAwesomeIcon icon={faSass} />,
                       onClick: () => {
                         router.push("/language#sass");
-                      }
-                    }
+                      },
+                    },
                   ]}
                 />
                 <HexagonalTile
                   hexitem={[
                     {
                       name: "RaspberryPi",
-                      icon: <FontAwesomeIcon icon={faRaspberryPi}/>,
+                      icon: <FontAwesomeIcon icon={faRaspberryPi} />,
                       onClick: () => {
                         router.push("/language#raspberrypi");
                       },
                     },
                     {
                       name: "Arduino",
-                      icon: <FontAwesomeIcon icon={faInfinity}/>,
+                      icon: <FontAwesomeIcon icon={faInfinity} />,
                       onClick: () => {
                         router.push("/language#arduino");
                       },
                     },
                     {
-                      name:"HTML5",
-                      icon: <FontAwesomeIcon icon={faHtml5}/>,
+                      name: "HTML5",
+                      icon: <FontAwesomeIcon icon={faHtml5} />,
                       onClick: () => {
                         router.push("/language#html");
-                      }
+                      },
                     },
                     {
                       name: "Node.js",
-                      icon: <FontAwesomeIcon icon={faNodeJs}/>,
+                      icon: <FontAwesomeIcon icon={faNodeJs} />,
                       onClick: () => {
                         router.push("/language#nodejs");
                       },
                     },
                     {
                       name: "Pytorch",
-                      icon: <FontAwesomeIcon icon={faFire}/>,
+                      icon: <FontAwesomeIcon icon={faFire} />,
                       onClick: () => {
                         router.push("/language#pytorch");
                       },
                     },
                     {
                       name: "Next.js",
-                      icon: <FontAwesomeIcon icon={faNextJs}/>,
+                      icon: <FontAwesomeIcon icon={faNextJs} />,
                       onClick: () => {
                         router.push("/language#nextjs");
-                      }
+                      },
                     },
                     {
                       name: "React",
-                      icon: <FontAwesomeIcon icon={faReact}/>,
+                      icon: <FontAwesomeIcon icon={faReact} />,
                       onClick: () => {
                         router.push("/language#react");
-                      }
-                    }
+                      },
+                    },
                   ]}
                 />
               </section>
@@ -327,7 +321,9 @@ const Home: NextPage = ({ projects }: { projects: fullProject[] }) => {
                     <div>
                       <h3>{project.name}</h3>
                       <Link href={`/project/${project.name}`} passHref>
-                        <p>View Project <FontAwesomeIcon icon={faArrowRight}/></p>
+                        <p>
+                          View Project <FontAwesomeIcon icon={faArrowRight} />
+                        </p>
                       </Link>
                     </div>
                   </div>

@@ -4,7 +4,6 @@
   background-color: #eeee;
   section{
     display: flex;
-    flex-direction: column;
     align-items: center;
   }
 }
@@ -17,9 +16,6 @@
   margin-left: 3%;
   h1,h2,h3,h4,h5,h6,p{
     z-index: 100;
-  }
-  img{
-    width: 100%;
   }
   p{
     font-size: 1rem;
@@ -221,28 +217,34 @@
       }
     }
   }
+  
   .about{
+    position: relative;
     display: flex;
-    flex-direction: row;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     section{
-      height: 60%;
-      width: fit-content;
+      position: relative;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-evenly;
+      flex-direction: row;
+      justify-content: center;
+      height: auto;
+      p{
+        font-size: 1.5rem;
+        span{
+          font-weight: 900;
+        }
+      }
+      .image{
+        position: relative;
+        width: 200px;
+        height: 200px;
+        aspect-ratio: 1/1;
+        margin: 1rem;
+      }
     }
-    img{
-      width: 50%;
-      aspect-ratio: 1/1;
-      object-fit: cover;
-      border-radius: 50%;
-    }
-
   }
-
   .experties{
     display: flex;
     flex-direction: column;
